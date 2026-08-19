@@ -1,0 +1,30 @@
+{
+  "patients": [
+    {
+      "id": 1,
+      "fullName": "Rana Hassan",
+      "phone": "01099342368",
+      "email": "rana@gmail.com",
+      "nationalId": "20202020222",
+      "age": 23,
+      "gender": "female"
+    },
+    {
+      "id": 2,
+      "fullName": "Abdo",
+      "phone": "01222333444",
+      "email": "abdo@gmail.com",
+      "nationalId": "888888890",
+      "age": 54,
+      "gender": "male"
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "email": "doctor@clinic.com",
+      "password": "123456",
+      "name": "Doctor"
+    }
+  ]
+}
