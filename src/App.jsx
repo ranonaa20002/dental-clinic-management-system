@@ -1,8 +1,8 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 
-// Doctor
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import DoctorLayout from "./Layout/DoctorLayout";
+
 import Patients from "./Pages/Patients/Patients";
 import Appointment from "./Pages/Appointment/Appointment";
 import MedicalRecords from "./Pages/MedicalRecords/MedicalRecords";
@@ -13,37 +13,33 @@ import DentalClinicalHub from "./Pages/DentalClinicalHub";
 import Reports from "./Pages/Reports/Reports";
 import Prescription from "./Pages/Prescription/Prescription";
 
-// Auth
 import Login from "./Pages/Auth/Login";
 import Register from "./Pages/Auth/Register";
 
-// Patient
 import CarePortal from "./Pages/CarePortal/CarePortal";
 import JoinDoctor from "./Pages/CarePortal/JoinDoctor";
 
-export default function App() {
+function App() {
   return (
     <Routes>
 
-      {/* ================= AUTH ================= */}
-
+      {/* LOGIN */}
       <Route
         path="/"
         element={<Login />}
       />
 
+      {/* REGISTER */}
       <Route
         path="/register"
         element={<Register />}
       />
 
-      {/* ================= DOCTOR ================= */}
-
+      {/* DOCTOR DASHBOARD */}
       <Route
         path="/dashboard"
         element={<DoctorLayout />}
       >
-
         <Route
           index
           element={<Dashboard />}
@@ -93,23 +89,21 @@ export default function App() {
           path="settings"
           element={<Settings />}
         />
-
       </Route>
 
-      {/* ================= PATIENT ================= */}
-
+      {/* PATIENT */}
       <Route
         path="/care"
         element={<CarePortal />}
       />
 
+      {/* JOIN DOCTOR */}
       <Route
         path="/care/join-doctor"
         element={<JoinDoctor />}
       />
 
-      {/* ================= 404 ================= */}
-
+      {/* ANY UNKNOWN URL */}
       <Route
         path="*"
         element={
@@ -123,3 +117,5 @@ export default function App() {
     </Routes>
   );
 }
+
+export default App;

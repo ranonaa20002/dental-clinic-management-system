@@ -14,9 +14,7 @@ import api from "../../services/Api";
 export default function Register() {
   const navigate = useNavigate();
 
-  // =========================
-  // VALIDATION
-  // =========================
+ 
 
   const validationSchema = Yup.object({
     fullName: Yup.string()
@@ -39,9 +37,7 @@ export default function Register() {
       .required("كلمة المرور مطلوبة"),
   });
 
-  // =========================
-  // FORM
-  // =========================
+
 
   const formik = useFormik({
     initialValues: {
@@ -55,13 +51,7 @@ export default function Register() {
 
     onSubmit: async (values, { resetForm }) => {
       try {
-        // =========================
-        // REGISTER
-        // =========================
-
-        // مهم جدًا:
-        // لا نرسل age إلى Strapi
-        // لأن Strapi عندك لا يقبله حاليًا
+     
         const res = await api.post("/auth/local/register", {
           username: values.fullName.trim(),
           email: values.emailAddress.trim(),
@@ -73,17 +63,13 @@ export default function Register() {
         const user = res.data.user;
         const token = res.data.jwt;
 
-        // =========================
-        // SAVE TOKEN
-        // =========================
+     
 
         if (token) {
           localStorage.setItem("token", token);
         }
 
-        // =========================
-        // PATIENT DATA
-        // =========================
+     
 
         const patient = {
           id: user?.id,
@@ -91,22 +77,18 @@ export default function Register() {
           username: user?.username || values.fullName.trim(),
           email: user?.email || values.emailAddress.trim(),
 
-          // السن محفوظ محليًا
+      
           age: Number(values.age),
         };
 
-        // =========================
-        // SAVE PATIENT
-        // =========================
+       
 
         localStorage.setItem(
           "patient",
           JSON.stringify(patient)
         );
 
-        // =========================
-        // SAVE USER
-        // =========================
+      
 
         localStorage.setItem(
           "user",
@@ -115,9 +97,7 @@ export default function Register() {
 
         console.log("PATIENT SAVED:", patient);
 
-        // =========================
-        // SUCCESS
-        // =========================
+       
 
         await Swal.fire({
           icon: "success",
@@ -132,9 +112,7 @@ export default function Register() {
 
         resetForm();
 
-        // =========================
-        // GO TO CARE PORTAL
-        // =========================
+      
 
         navigate("/care", {
           replace: true,
@@ -182,11 +160,10 @@ export default function Register() {
         className="w-full max-w-xl bg-white p-8 rounded-3xl shadow-xl relative overflow-hidden"
       >
 
-        {/* TOP LINE */}
 
         <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-sky-400 via-blue-600 to-pink-500" />
 
-        {/* HEADER */}
+   
 
         <div className="text-center mb-7 mt-2">
 
@@ -216,9 +193,7 @@ export default function Register() {
 
         <div className="space-y-4">
 
-          {/* =========================
-              NAME
-          ========================= */}
+
 
           <div>
 
@@ -252,9 +227,7 @@ export default function Register() {
           </div>
 
 
-          {/* =========================
-              AGE
-          ========================= */}
+         
 
           <div>
 
@@ -289,9 +262,7 @@ export default function Register() {
           </div>
 
 
-          {/* =========================
-              EMAIL
-          ========================= */}
+  
 
           <div>
 
@@ -325,9 +296,6 @@ export default function Register() {
           </div>
 
 
-          {/* =========================
-              PASSWORD
-          ========================= */}
 
           <div>
 
@@ -363,9 +331,7 @@ export default function Register() {
         </div>
 
 
-        {/* =========================
-            BUTTON
-        ========================= */}
+      
 
         <button
           type="submit"

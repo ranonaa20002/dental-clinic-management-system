@@ -1,1577 +1,2405 @@
-import {
-  Calendar,
-  Star,
-  Trophy,
-  Smile,
-  Clock,
-  Bell,
-  MessageCircle,
-  ShoppingBag,
-  CreditCard,
-  CheckCircle2,
-  XCircle,
-  Gift,
-  FileText,
-  Sparkles,
-  Heart,
-  Medal,
-  ArrowLeft,
-} from "lucide-react";
-
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  CalendarDays,
+  FileText,
+  CreditCard,
+  Bell,
+  Activity,
+  HeartPulse,
+  Trophy,
+  Star,
+  Stethoscope,
+  MapPin,
+  Clock3,
+  UserRound,
+  Check,
+  X,
+  MessageSquare,
+  Sparkles,
+  CircleHelp,
+  ChevronLeft,
+} from "lucide-react";
 
 export default function ChildPatientDashboard({ patient }) {
-  const [appointmentStatus, setAppointmentStatus] =
-    useState("pending");
-
+  const [appointmentStatus, setAppointmentStatus] = useState("pending");
+  const [showReject, setShowReject] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
-  const [showReason, setShowReason] = useState(false);
 
   const childName =
     patient?.name ||
     patient?.username ||
-    "البطل";
+    "ياسين محمد";
 
-  const handleConfirm = () => {
+  const confirmAppointment = () => {
     setAppointmentStatus("confirmed");
   };
 
-  const handleReject = () => {
+  const rejectAppointment = () => {
     if (!rejectReason.trim()) return;
 
     setAppointmentStatus("rejected");
-    setShowReason(false);
+    setShowReject(false);
   };
 
   return (
-    <div
-      dir="rtl"
-      className="
-        min-h-screen
-        bg-[#f7fbff]
-        text-slate-800
-        overflow-hidden
-      "
-    >
+    <div dir="rtl" className="patient-content">
 
-      {/* =====================================================
-          FLOATING BACKGROUND
-      ===================================================== */}
+      {/* ================= BACKGROUND ================= */}
 
-      <FloatingShape
-        className="top-32 right-[5%]"
-        delay={0}
-      >
-        ⭐
-      </FloatingShape>
+      <div className="page-bg">
+        <div className="bg-image" />
+        <div className="bg-overlay" />
+        <div className="bg-grid" />
 
-      <FloatingShape
-        className="top-[45%] left-[4%]"
-        delay={0.8}
-      >
-        ✨
-      </FloatingShape>
+        <div className="glow glow-1" />
+        <div className="glow glow-2" />
+      </div>
 
-      <FloatingShape
-        className="top-[70%] right-[8%]"
-        delay={1.4}
-      >
-        💙
-      </FloatingShape>
+      {/* ================= CONTENT ================= */}
 
-      <FloatingShape
-        className="top-[20%] left-[20%]"
-        delay={2}
-      >
-        🌈
-      </FloatingShape>
+      <main className="content-wrapper">
 
+        {/* ================= HERO ================= */}
 
-      {/* =====================================================
-          HEADER
-      ===================================================== */}
+        <section className="patient-hero">
 
-      <header
-        className="
-          sticky
-          top-0
-          z-50
-          bg-white/80
-          backdrop-blur-xl
-          border-b
-          border-sky-100
-        "
-      >
-        <div className="max-w-7xl mx-auto px-4 md:px-6 py-4">
+          <div className="hero-bg" />
+          <div className="hero-overlay" />
 
-          <div className="flex items-center justify-between">
+          {/* TEXT */}
 
-            {/* LOGO */}
+          <div className="hero-text">
 
-            <div className="flex items-center gap-3">
-
-              <motion.div
-                animate={{
-                  rotate: [0, -8, 8, 0],
-                  y: [0, -3, 0],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  repeatDelay: 2,
-                }}
-                className="
-                  w-12
-                  h-12
-                  rounded-2xl
-                  bg-gradient-to-br
-                  from-sky-400
-                  to-blue-600
-                  flex
-                  items-center
-                  justify-center
-                  text-2xl
-                  shadow-lg
-                  shadow-sky-200
-                "
-              >
-                🦷
-              </motion.div>
-
-              <div>
-                <h1 className="font-black text-slate-800">
-                  My Dental Clinic
-                </h1>
-
-                <p className="text-xs text-slate-400">
-                  عالم الابتسامة 🌈
-                </p>
-              </div>
-
+            <div className="welcome">
+              WELCOME BACK
             </div>
 
+            <h1>
+              أهلاً يا
+              <span>{childName}</span>
+            </h1>
 
-            {/* NOTIFICATION */}
-
-            <motion.button
-              whileHover={{ scale: 1.08 }}
-              whileTap={{ scale: 0.94 }}
-              className="
-                relative
-                w-11
-                h-11
-                rounded-2xl
-                bg-sky-50
-                text-sky-600
-                flex
-                items-center
-                justify-center
-              "
-            >
-              <Bell size={21} />
-
-              <motion.span
-                animate={{ scale: [1, 1.15, 1] }}
-                transition={{
-                  duration: 1.5,
-                  repeat: Infinity,
-                }}
-                className="
-                  absolute
-                  -top-1
-                  -left-1
-                  w-5
-                  h-5
-                  bg-pink-500
-                  text-white
-                  rounded-full
-                  text-[10px]
-                  flex
-                  items-center
-                  justify-center
-                  font-bold
-                "
-              >
-                3
-              </motion.span>
-            </motion.button>
-
-          </div>
-        </div>
-      </header>
-
-
-      {/* =====================================================
-          MAIN
-      ===================================================== */}
-
-      <main className="relative max-w-7xl mx-auto px-4 md:px-6 py-6 space-y-6">
-
-
-        {/* =====================================================
-            HERO
-        ===================================================== */}
-
-        <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="
-            relative
-            overflow-hidden
-            rounded-[2.5rem]
-            bg-gradient-to-br
-            from-sky-500
-            via-cyan-400
-            to-violet-500
-            p-7
-            md:p-10
-            text-white
-            shadow-2xl
-            shadow-sky-200
-          "
-        >
-
-          {/* DECORATION */}
-
-          <motion.div
-            animate={{
-              y: [0, -15, 0],
-              rotate: [0, 10, 0],
-            }}
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-            }}
-            className="
-              absolute
-              left-6
-              bottom-5
-              text-7xl
-              opacity-30
-            "
-          >
-            🦷
-          </motion.div>
-
-
-          <motion.div
-            animate={{
-              y: [0, -10, 0],
-              rotate: [0, 15, 0],
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-            }}
-            className="
-              absolute
-              right-10
-              top-8
-              text-5xl
-              opacity-30
-            "
-          >
-            ⭐
-          </motion.div>
-
-
-          <div className="relative z-10 max-w-2xl">
-
-            <div className="flex items-center gap-2 text-white/80 font-bold">
-              <Sparkles size={18} />
-              My Dental Clinic
-            </div>
-
-            <motion.h1
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-              className="
-                text-3xl
-                md:text-5xl
-                font-black
-                mt-3
-              "
-            >
-              أهلاً يا {childName} 👋
-            </motion.h1>
-
-            <p className="mt-4 text-white/90 text-lg">
-              جاهز تخلي ابتسامتك أجمل؟ 😁
+            <p>
+              نهتم بابتسامتك
+              <br />
+              ونرافقك في كل خطوة
             </p>
 
+            <div className="smart-care">
+              <Activity size={17} />
+              SMART DENTAL CARE
+            </div>
 
-            {/* BADGES */}
+            <div className="hero-buttons">
 
-            <div className="flex flex-wrap gap-3 mt-7">
+              <button className="primary-btn">
+                <CalendarDays size={17} />
+                حجز موعد جديد
+              </button>
 
-              <Badge icon="⭐">
-                120 نقطة
-              </Badge>
-
-              <Badge icon="🏆">
-                بطل الأسنان
-              </Badge>
-
-              <Badge icon="🦷">
-                5 زيارات
-              </Badge>
+              <button className="secondary-btn">
+                <FileText size={17} />
+                الملف الطبي
+              </button>
 
             </div>
 
           </div>
 
-        </motion.section>
+          {/* ================= CHILD IMAGE ================= */}
 
+          <div className="child-area">
 
-        {/* =====================================================
-            STATS
-        ===================================================== */}
+            <div className="child-aura" />
 
-        <motion.section
-          initial="hidden"
-          animate="visible"
-          variants={{
-            hidden: {},
-            visible: {
-              transition: {
-                staggerChildren: 0.12,
-              },
-            },
-          }}
-          className="
-            grid
-            grid-cols-1
-            sm:grid-cols-2
-            lg:grid-cols-3
-            gap-5
-          "
-        >
-
-          <AnimatedStat
-            icon={<Star size={25} />}
-            emoji="⭐"
-            title="نقاطك"
-            value="120"
-            description="استمر واجمع نقاط أكتر!"
-            bg="from-yellow-50 to-orange-50"
-            iconBg="bg-yellow-100"
-            iconColor="text-yellow-500"
-          />
-
-          <AnimatedStat
-            icon={<Trophy size={25} />}
-            emoji="🏆"
-            title="مستواك"
-            value="بطل الأسنان"
-            description="أنت بتتقدم بشكل رائع!"
-            bg="from-violet-50 to-purple-50"
-            iconBg="bg-purple-100"
-            iconColor="text-purple-500"
-          />
-
-          <AnimatedStat
-            icon={<Smile size={25} />}
-            emoji="😁"
-            title="زياراتك"
-            value="5"
-            description="زيارات ناجحة للعيادة"
-            bg="from-emerald-50 to-green-50"
-            iconBg="bg-green-100"
-            iconColor="text-green-500"
-          />
-
-        </motion.section>
-
-
-        {/* =====================================================
-            APPOINTMENT
-        ===================================================== */}
-
-        <motion.section
-          initial={{ opacity: 0, y: 25 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="
-            bg-white
-            rounded-[2.5rem]
-            border
-            border-sky-100
-            shadow-xl
-            shadow-sky-100/50
-            overflow-hidden
-          "
-        >
-
-          <div className="p-6 border-b border-slate-100">
-
-            <div className="flex items-center justify-between gap-4">
-
-              <div className="flex items-center gap-3">
-
-                <div
-                  className="
-                    w-12
-                    h-12
-                    rounded-2xl
-                    bg-gradient-to-br
-                    from-sky-100
-                    to-cyan-100
-                    text-sky-600
-                    flex
-                    items-center
-                    justify-center
-                  "
-                >
-                  <Calendar size={23} />
-                </div>
-
-                <div>
-                  <h2 className="font-black">
-                    دكتورك عايز يشوفك! 👨‍⚕️
-                  </h2>
-
-                  <p className="text-xs text-slate-400 mt-1">
-                    عندك طلب موعد جديد
-                  </p>
-                </div>
-
-              </div>
-
-
-              <StatusBadge status={appointmentStatus} />
-
-            </div>
-
-          </div>
-
-
-          <div className="p-6">
-
-            <div
-              className="
-                relative
-                bg-gradient-to-br
-                from-sky-50
-                via-white
-                to-cyan-50
-                rounded-[2rem]
-                p-5
-                md:p-6
-                border
-                border-sky-100
-              "
-            >
-
-              <div className="flex flex-col md:flex-row gap-5">
-
-                {/* DOCTOR */}
-
-                <motion.div
-                  whileHover={{ scale: 1.03 }}
-                  className="
-                    w-full
-                    md:w-20
-                    h-20
-                    rounded-3xl
-                    bg-white
-                    shadow-md
-                    flex
-                    items-center
-                    justify-center
-                    text-4xl
-                    shrink-0
-                  "
-                >
-                  👨‍⚕️
-                </motion.div>
-
-
-                <div className="flex-1">
-
-                  <h3 className="font-black text-xl">
-                    د. أحمد
-                  </h3>
-
-                  <p className="text-sm text-slate-400 mt-1">
-                    طبيب الأسنان
-                  </p>
-
-
-                  <div
-                    className="
-                      grid
-                      grid-cols-1
-                      md:grid-cols-3
-                      gap-3
-                      mt-5
-                    "
-                  >
-
-                    <InfoBox
-                      icon={<Calendar size={17} />}
-                      title="اليوم"
-                      value="الأحد 23 أغسطس"
-                    />
-
-                    <InfoBox
-                      icon={<Clock size={17} />}
-                      title="الوقت"
-                      value="10:30 صباحًا"
-                    />
-
-                    <InfoBox
-                      icon={<Smile size={17} />}
-                      title="الزيارة"
-                      value="فحص الأسنان"
-                    />
-
-                  </div>
-
-
-                  {/* ACTIONS */}
-
-                  {appointmentStatus === "pending" && (
-
-                    <AnimatePresence mode="wait">
-
-                      {!showReason ? (
-
-                        <motion.div
-                          key="buttons"
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          className="flex flex-wrap gap-3 mt-5"
-                        >
-
-                          <motion.button
-                            whileHover={{
-                              scale: 1.04,
-                              y: -2,
-                            }}
-                            whileTap={{ scale: 0.96 }}
-                            onClick={handleConfirm}
-                            className="
-                              flex
-                              items-center
-                              gap-2
-                              px-6
-                              py-3
-                              rounded-2xl
-                              bg-gradient-to-r
-                              from-emerald-400
-                              to-green-500
-                              text-white
-                              font-bold
-                              shadow-lg
-                              shadow-green-200
-                            "
-                          >
-                            <CheckCircle2 size={18} />
-                            أيوه، موافق 😁
-                          </motion.button>
-
-
-                          <motion.button
-                            whileHover={{
-                              scale: 1.04,
-                            }}
-                            whileTap={{
-                              scale: 0.96,
-                            }}
-                            onClick={() =>
-                              setShowReason(true)
-                            }
-                            className="
-                              flex
-                              items-center
-                              gap-2
-                              px-6
-                              py-3
-                              rounded-2xl
-                              bg-red-50
-                              text-red-500
-                              font-bold
-                              border
-                              border-red-100
-                            "
-                          >
-                            <XCircle size={18} />
-                            مش مناسب
-                          </motion.button>
-
-                        </motion.div>
-
-                      ) : (
-
-                        <motion.div
-                          key="reason"
-                          initial={{
-                            opacity: 0,
-                            height: 0,
-                          }}
-                          animate={{
-                            opacity: 1,
-                            height: "auto",
-                          }}
-                          className="mt-5 space-y-3"
-                        >
-
-                          <textarea
-                            value={rejectReason}
-                            onChange={(e) =>
-                              setRejectReason(e.target.value)
-                            }
-                            placeholder="ليه مش مناسب؟ 💭"
-                            className="
-                              w-full
-                              min-h-28
-                              border
-                              border-slate-200
-                              rounded-2xl
-                              p-4
-                              outline-none
-                              resize-none
-                              focus:border-sky-400
-                              focus:ring-4
-                              focus:ring-sky-50
-                            "
-                          />
-
-                          <div className="flex gap-3">
-
-                            <motion.button
-                              whileTap={{ scale: 0.95 }}
-                              onClick={handleReject}
-                              className="
-                                px-6
-                                py-3
-                                rounded-2xl
-                                bg-red-500
-                                text-white
-                                font-bold
-                              "
-                            >
-                              إرسال
-                            </motion.button>
-
-                            <motion.button
-                              whileTap={{ scale: 0.95 }}
-                              onClick={() =>
-                                setShowReason(false)
-                              }
-                              className="
-                                px-6
-                                py-3
-                                rounded-2xl
-                                bg-slate-100
-                                text-slate-600
-                                font-bold
-                              "
-                            >
-                              رجوع
-                            </motion.button>
-
-                          </div>
-
-                        </motion.div>
-
-                      )}
-
-                    </AnimatePresence>
-                  )}
-
-
-                  {/* CONFIRMED */}
-
-                  <AnimatePresence>
-
-                    {appointmentStatus === "confirmed" && (
-
-                      <motion.div
-                        initial={{
-                          opacity: 0,
-                          scale: 0.9,
-                        }}
-                        animate={{
-                          opacity: 1,
-                          scale: 1,
-                        }}
-                        className="
-                          mt-5
-                          bg-green-50
-                          border
-                          border-green-100
-                          rounded-2xl
-                          p-5
-                        "
-                      >
-
-                        <div className="flex items-center gap-2 text-green-600 font-bold">
-
-                          <CheckCircle2 size={20} />
-
-                          تمام! الموعد اتأكد 🎉
-
-                        </div>
-
-                        <p className="text-sm text-green-500 mt-2">
-                          مستنيك د. أحمد يوم الأحد الساعة
-                          10:30 صباحًا.
-                        </p>
-
-                      </motion.div>
-
-                    )}
-
-                  </AnimatePresence>
-
-
-                  {/* REJECTED */}
-
-                  <AnimatePresence>
-
-                    {appointmentStatus === "rejected" && (
-
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="
-                          mt-5
-                          bg-red-50
-                          border
-                          border-red-100
-                          rounded-2xl
-                          p-5
-                        "
-                      >
-
-                        <div className="flex items-center gap-2 text-red-600 font-bold">
-
-                          <XCircle size={20} />
-
-                          تم إرسال رفض الموعد
-
-                        </div>
-
-                        <p className="text-sm text-red-500 mt-2">
-                          السبب: {rejectReason}
-                        </p>
-
-                      </motion.div>
-
-                    )}
-
-                  </AnimatePresence>
-
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </motion.section>
-
-
-        {/* =====================================================
-            NOTIFICATIONS + MESSAGE
-        ===================================================== */}
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-          <AnimatedSection>
-
-            <SectionTitle
-              icon={<Bell />}
-              title="الإشعارات 🔔"
-              subtitle="فيه حاجات جديدة ليك"
-            />
-
-            <div className="space-y-2 mt-5">
-
-              <Notification
-                icon={<Calendar />}
-                title="موعد جديد! 📅"
-                text="د. أحمد بعتلك طلب موعد."
-                time="منذ 10 دقائق"
-              />
-
-              <Notification
-                icon={<MessageCircle />}
-                title="رسالة من الدكتور 💬"
-                text="ماتنساش تجيب الأشعة معاك."
-                time="منذ 20 دقيقة"
-              />
-
-              <Notification
-                icon={<Gift />}
-                title="مكافأة جديدة! 🎁"
-                text="كسبت 20 نقطة جديدة."
-                time="منذ ساعة"
-              />
-
-            </div>
-
-          </AnimatedSection>
-
-
-          <AnimatedSection>
-
-            <SectionTitle
-              icon={<MessageCircle />}
-              title="رسالة من الدكتور 💬"
-              subtitle="الدكتور بعتلك رسالة"
-            />
+            <div className="child-circle circle-1" />
+            <div className="child-circle circle-2" />
 
             <motion.div
-              whileHover={{ scale: 1.01 }}
-              className="
-                mt-5
-                bg-gradient-to-br
-                from-pink-50
-                to-purple-50
-                rounded-3xl
-                p-5
-                border
-                border-pink-100
-              "
+              className="child-photo"
+              animate={{
+                y: [0, -7, 0],
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
             >
 
-              <div className="flex items-center gap-3">
-
-                <div
-                  className="
-                    w-12
-                    h-12
-                    rounded-2xl
-                    bg-white
-                    shadow-sm
-                    flex
-                    items-center
-                    justify-center
-                    text-2xl
-                  "
-                >
-                  👨‍⚕️
-                </div>
-
-                <div>
-
-                  <h3 className="font-bold">
-                    د. أحمد
-                  </h3>
-
-                  <p className="text-xs text-slate-400">
-                    طبيب الأسنان
-                  </p>
-
-                </div>
-
-              </div>
-
-              <p className="text-sm text-slate-600 leading-7 mt-5">
-                أهلاً يا بطل! 🦷
-                <br />
-                ماتنساش تجيب الأشعة القديمة معاك في الزيارة الجاية.
-              </p>
-
-              <button
-                className="
-                  mt-4
-                  flex
-                  items-center
-                  gap-2
-                  text-pink-600
-                  font-bold
-                  text-sm
-                "
-              >
-                فتح الرسالة
-                <ArrowLeft size={16} />
-              </button>
+              <img
+                src="/images/child-patient-photo.png"
+                alt="Child Patient"
+                onError={(e) => {
+                  console.error(
+                    "Image not found: /images/child-patient-photo.png"
+                  );
+                }}
+              />
 
             </motion.div>
 
-          </AnimatedSection>
+          </div>
 
-        </div>
+          {/* ================= TOOTH ================= */}
 
+          <div className="tooth-area">
 
-        {/* =====================================================
-            REQUESTS
-        ===================================================== */}
+            <div className="tooth-orbit orbit-1" />
+            <div className="tooth-orbit orbit-2" />
+            <div className="tooth-orbit orbit-3" />
 
-        <AnimatedSection>
+            <div className="tooth-icon">
+              <ToothSVG />
+            </div>
 
-          <SectionTitle
-            icon={<ShoppingBag />}
-            title="طلبات الدكتور 🛍️"
-            subtitle="حاجات الدكتور طالبها منك"
+            <div className="ai-card">
+
+              <Activity size={15} />
+
+              <div>
+                <strong>AI DENTAL</strong>
+                <span>MONITORING</span>
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+        {/* ================= STATS ================= */}
+
+        <section className="stats">
+
+          <StatCard
+            icon={<CreditCard />}
+            title="المبلغ المطلوب"
+            value="850"
+            subtitle="جنيه"
+            type="yellow"
           />
 
-          <motion.div
-            whileHover={{ y: -3 }}
-            className="
-              mt-5
-              flex
-              flex-col
-              md:flex-row
-              md:items-center
-              justify-between
-              gap-4
-              p-5
-              rounded-3xl
-              bg-gradient-to-r
-              from-yellow-50
-              to-orange-50
-              border
-              border-yellow-100
-            "
-          >
+          <StatCard
+            icon={<HeartPulse />}
+            title="حالة العلاج"
+            value="65%"
+            subtitle="Progress"
+            type="cyan"
+          />
 
-            <div className="flex items-center gap-4">
+          <StatCard
+            icon={<CalendarDays />}
+            title="الزيارات"
+            value="5"
+            subtitle="Visits"
+            type="green"
+          />
 
-              <div
-                className="
-                  w-14
-                  h-14
-                  rounded-2xl
-                  bg-white
-                  shadow-sm
-                  text-yellow-500
-                  flex
-                  items-center
-                  justify-center
-                "
-              >
-                <ShoppingBag size={23} />
+          <StatCard
+            icon={<Trophy />}
+            title="المكافآت"
+            value="120"
+            subtitle="Points"
+            type="purple"
+          />
+
+        </section>
+
+        {/* ================= CARDS ================= */}
+
+        <section className="cards-grid">
+
+          {/* ================= APPOINTMENT ================= */}
+
+          <div className="card appointment-card">
+
+            <CardTitle
+              icon={<CalendarDays />}
+              title="الموعد القادم"
+              english="UPCOMING APPOINTMENT"
+            />
+
+            <div className="appointment-top">
+
+              <div className="doctor">
+
+                <div className="doctor-image">
+                  <Stethoscope size={29} />
+                </div>
+
+                <div>
+                  <h3>د. أحمد محمد</h3>
+
+                  <p>
+                    طبيب أسنان أطفال
+                  </p>
+
+                  <div className="rating">
+                    <Star size={13} fill="currentColor" />
+                    4.9
+                  </div>
+                </div>
+
+              </div>
+
+              <AppointmentStatus
+                status={appointmentStatus}
+              />
+
+            </div>
+
+            <div className="appointment-info">
+
+              <InfoBox
+                icon={<CalendarDays />}
+                title="التاريخ"
+                value="الأحد 23 أغسطس 2026"
+              />
+
+              <InfoBox
+                icon={<Clock3 />}
+                title="الوقت"
+                value="10:30 صباحًا"
+              />
+
+              <InfoBox
+                icon={<MapPin />}
+                title="الفرع"
+                value="مدينة نصر"
+              />
+
+              <InfoBox
+                icon={<Activity />}
+                title="التخصص"
+                value="أسنان أطفال"
+              />
+
+            </div>
+
+            {appointmentStatus === "pending" && (
+              <>
+                {!showReject ? (
+
+                  <div className="appointment-actions">
+
+                    <button
+                      className="confirm"
+                      onClick={confirmAppointment}
+                    >
+                      <Check size={17} />
+                      تأكيد الموعد
+                    </button>
+
+                    <button
+                      className="reject"
+                      onClick={() => setShowReject(true)}
+                    >
+                      <X size={17} />
+                      رفض الموعد
+                    </button>
+
+                  </div>
+
+                ) : (
+
+                  <div className="reject-box">
+
+                    <textarea
+                      value={rejectReason}
+                      onChange={(e) =>
+                        setRejectReason(e.target.value)
+                      }
+                      placeholder="اكتب سبب عدم مناسبة الموعد..."
+                    />
+
+                    <div className="reject-buttons">
+
+                      <button
+                        className="send-reject"
+                        onClick={rejectAppointment}
+                      >
+                        إرسال الرفض
+                      </button>
+
+                      <button
+                        className="cancel-reject"
+                        onClick={() => setShowReject(false)}
+                      >
+                        إلغاء
+                      </button>
+
+                    </div>
+
+                  </div>
+
+                )}
+              </>
+            )}
+
+            <AnimatePresence>
+
+              {appointmentStatus === "confirmed" && (
+
+                <motion.div
+                  initial={{
+                    opacity: 0,
+                    y: 10,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                  }}
+                  className="success"
+                >
+                  <Check size={17} />
+                  تم تأكيد الموعد بنجاح
+                </motion.div>
+
+              )}
+
+              {appointmentStatus === "rejected" && (
+
+                <motion.div
+                  initial={{
+                    opacity: 0,
+                    y: 10,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                  }}
+                  className="error"
+                >
+                  <X size={17} />
+                  تم إرسال رفض الموعد للطبيب
+                </motion.div>
+
+              )}
+
+            </AnimatePresence>
+
+          </div>
+
+          {/* ================= PROFILE ================= */}
+
+          <div className="card profile-card">
+
+            <CardTitle
+              icon={<UserRound />}
+              title="ملف المريض"
+              english="PATIENT PROFILE"
+            />
+
+            <div className="profile">
+
+              <div className="profile-image">
+
+                <img
+                  src="/images/child-patient-photo.png"
+                  alt={childName}
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
+
               </div>
 
               <div>
 
-                <h3 className="font-bold">
-                  هات الأشعة القديمة 🩻
-                </h3>
+                <h3>{childName}</h3>
 
-                <p className="text-sm text-slate-500 mt-1">
-                  طلب من د. أحمد
+                <p>
+                  Patient ID: #{patient?.id || "1048"}
                 </p>
 
               </div>
 
             </div>
 
-            <span
-              className="
-                px-4
-                py-2
-                rounded-full
-                bg-yellow-100
-                text-yellow-700
-                text-xs
-                font-bold
-                w-fit
-              "
-            >
-              مطلوب منك
-            </span>
+            <div className="profile-data">
 
-          </motion.div>
+              <MiniData
+                title="العمر"
+                value={`${patient?.age || 12} سنة`}
+              />
 
-        </AnimatedSection>
+              <MiniData
+                title="الزيارات"
+                value="5"
+              />
 
+              <MiniData
+                title="فصيلة الدم"
+                value={patient?.bloodType || "O+"}
+              />
 
-        {/* =====================================================
-            PAYMENT
-        ===================================================== */}
-
-        <AnimatedSection>
-
-          <section
-            className="
-              relative
-              overflow-hidden
-              rounded-[2rem]
-              bg-gradient-to-br
-              from-sky-500
-              to-cyan-400
-              p-7
-              text-white
-              shadow-xl
-            "
-          >
-
-            <div className="absolute -left-5 -bottom-5 text-8xl opacity-10">
-              💰
-            </div>
-
-            <div className="relative z-10">
-
-              <div className="flex items-center gap-3">
-
-                <CreditCard />
-
-                <div>
-
-                  <h2 className="font-black text-xl">
-                    المصاريف 💳
-                  </h2>
-
-                  <p className="text-white/70 text-xs">
-                    هل عليك فلوس للدكتور؟
-                  </p>
-
-                </div>
-
-              </div>
-
-
-              <div className="flex items-center justify-between mt-7">
-
-                <div>
-
-                  <p className="text-white/70 text-sm">
-                    المبلغ المطلوب
-                  </p>
-
-                  <h2 className="text-4xl font-black mt-1">
-                    850
-                    <span className="text-lg mr-2">
-                      جنيه
-                    </span>
-                  </h2>
-
-                </div>
-
-                <motion.div
-                  animate={{
-                    y: [0, -8, 0],
-                    rotate: [0, 5, 0],
-                  }}
-                  transition={{
-                    duration: 2.5,
-                    repeat: Infinity,
-                  }}
-                  className="text-6xl"
-                >
-                  💰
-                </motion.div>
-
-              </div>
-
-              <div className="flex flex-wrap gap-3 mt-6">
-
-                <motion.button
-                  whileHover={{ scale: 1.04 }}
-                  whileTap={{ scale: 0.96 }}
-                  className="
-                    px-6
-                    py-3
-                    rounded-2xl
-                    bg-white
-                    text-sky-600
-                    font-bold
-                  "
-                >
-                  ادفع الآن 💳
-                </motion.button>
-
-                <button
-                  className="
-                    px-6
-                    py-3
-                    rounded-2xl
-                    bg-white/20
-                    text-white
-                    font-bold
-                  "
-                >
-                  عرض الفاتورة
-                </button>
-
-              </div>
-
-            </div>
-
-          </section>
-
-        </AnimatedSection>
-
-
-        {/* =====================================================
-            REWARDS
-        ===================================================== */}
-
-        <motion.section
-          initial={{ opacity: 0, scale: 0.97 }}
-          whileInView={{
-            opacity: 1,
-            scale: 1,
-          }}
-          viewport={{ once: true }}
-          className="
-            relative
-            overflow-hidden
-            bg-gradient-to-r
-            from-violet-500
-            via-purple-500
-            to-pink-500
-            rounded-[2rem]
-            p-7
-            text-white
-            shadow-xl
-          "
-        >
-
-          <motion.div
-            animate={{
-              rotate: [0, 10, -10, 0],
-              scale: [1, 1.08, 1],
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-            }}
-            className="text-5xl"
-          >
-            🏆
-          </motion.div>
-
-          <h2 className="text-2xl font-black mt-4">
-            قربت تبقى بطل الأسنان! ⭐
-          </h2>
-
-          <p className="text-white/80 text-sm mt-2">
-            اجمع 30 نقطة كمان وخد مكافأة جديدة 🎁
-          </p>
-
-
-          <div className="mt-6">
-
-            <div className="flex justify-between text-xs mb-2">
-              <span>120 نقطة</span>
-              <span>150 نقطة</span>
-            </div>
-
-            <div className="h-4 bg-white/20 rounded-full overflow-hidden">
-
-              <motion.div
-                initial={{ width: 0 }}
-                whileInView={{ width: "80%" }}
-                viewport={{ once: true }}
-                transition={{
-                  duration: 1.2,
-                  ease: "easeOut",
-                }}
-                className="
-                  h-full
-                  bg-white
-                  rounded-full
-                "
+              <MiniData
+                title="الحالة"
+                value="مستمر"
               />
 
             </div>
 
           </div>
 
-        </motion.section>
+          {/* ================= TREATMENT ================= */}
 
+          <div className="card treatment-card">
 
-        {/* =====================================================
-            QUICK ACTIONS
-        ===================================================== */}
+            <CardTitle
+              icon={<Sparkles />}
+              title="تقدم العلاج"
+              english="TREATMENT PROGRESS"
+            />
 
-        <section>
+            <div className="progress">
 
-          <div className="flex items-center gap-2 mb-4">
+              <svg viewBox="0 0 180 180">
 
-            <Sparkles className="text-purple-500" />
+                <circle
+                  cx="90"
+                  cy="90"
+                  r="70"
+                  className="progress-bg"
+                />
 
-            <h2 className="text-xl font-black">
-              إيه اللي عايز تعمله؟ 😊
-            </h2>
+                <motion.circle
+                  cx="90"
+                  cy="90"
+                  r="70"
+                  className="progress-bar"
+                  initial={{
+                    strokeDashoffset: 440,
+                  }}
+                  animate={{
+                    strokeDashoffset: 154,
+                  }}
+                  transition={{
+                    duration: 1.5,
+                  }}
+                />
+
+              </svg>
+
+              <div className="progress-number">
+
+                <strong>65%</strong>
+
+                <span>
+                  COMPLETED
+                </span>
+
+              </div>
+
+            </div>
+
+            <div className="treatment-message">
+
+              <strong>
+                أنت في الطريق الصحيح
+              </strong>
+
+              <span>
+                استمر على مواعيد المتابعة
+              </span>
+
+            </div>
 
           </div>
 
+          {/* ================= ACTIVITY ================= */}
 
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={{
-              hidden: {},
-              visible: {
-                transition: {
-                  staggerChildren: 0.1,
-                },
-              },
-            }}
-            className="
-              grid
-              grid-cols-2
-              md:grid-cols-4
-              gap-4
-            "
-          >
+          <div className="card activity-card">
 
-            <ActionCard
-              icon={<Calendar />}
-              emoji="📅"
-              title="حجز موعد"
-              description="احجز زيارة جديدة"
+            <CardTitle
+              icon={<Bell />}
+              title="آخر التنبيهات"
+              english="RECENT ACTIVITY"
             />
 
-            <ActionCard
-              icon={<FileText />}
-              emoji="🦷"
-              title="ملفي الطبي"
-              description="شوف ملفك الطبي"
+            <div className="activity-list">
+
+              <ActivityItem
+                icon={<CalendarDays />}
+                title="موعد جديد"
+                text="تم إرسال طلب موعد جديد من د. أحمد محمد"
+                time="10 دقائق"
+              />
+
+              <ActivityItem
+                icon={<MessageSquare />}
+                title="رسالة من الطبيب"
+                text="من فضلك أحضر الأشعة السابقة معك في الزيارة"
+                time="25 دقيقة"
+              />
+
+              <ActivityItem
+                icon={<Star />}
+                title="تم إضافة نقاط"
+                text="حصلت على 20 نقطة إضافية"
+                time="1 ساعة"
+              />
+
+            </div>
+
+            <button className="view-all">
+              عرض جميع التنبيهات
+              <ChevronLeft size={14} />
+            </button>
+
+          </div>
+
+          {/* ================= QUICK ACTIONS ================= */}
+
+          <div className="card quick-card">
+
+            <CardTitle
+              icon={<Sparkles />}
+              title="خدمات سريعة"
+              english="QUICK ACTIONS"
             />
 
-            <ActionCard
-              icon={<CreditCard />}
-              emoji="💳"
-              title="المدفوعات"
-              description="شوف المصاريف"
-            />
+            <div className="quick-grid">
 
-            <ActionCard
-              icon={<Gift />}
-              emoji="🎁"
-              title="إنجازاتي"
-              description="شوف نقاطك ومكافآتك"
-            />
+              <QuickButton
+                icon={<CalendarDays />}
+                text="حجز موعد"
+                type="blue"
+              />
 
-          </motion.div>
+              <QuickButton
+                icon={<FileText />}
+                text="الملف الطبي"
+                type="cyan"
+              />
+
+              <QuickButton
+                icon={<CreditCard />}
+                text="المدفوعات"
+                type="green"
+              />
+
+              <QuickButton
+                icon={<MessageSquare />}
+                text="رسائل الطبيب"
+                type="teal"
+              />
+
+              <QuickButton
+                icon={<Trophy />}
+                text="المكافآت"
+                type="yellow"
+              />
+
+              <QuickButton
+                icon={<CircleHelp />}
+                text="المساعدة"
+                type="purple"
+              />
+
+            </div>
+
+          </div>
 
         </section>
 
       </main>
 
+      {/* ================= CSS ================= */}
+
+      <style>{`
+
+        * {
+          box-sizing: border-box;
+        }
+
+        html,
+        body,
+        #root {
+          margin: 0;
+          padding: 0;
+          min-height: 100%;
+          width: 100%;
+        }
+
+        body {
+          background: #020812;
+        }
+
+        .patient-content {
+          min-height: 100vh;
+          position: relative;
+          overflow-x: hidden;
+
+          color: #fff;
+
+          font-family:
+            Inter,
+            "Segoe UI",
+            Tahoma,
+            Arial,
+            sans-serif;
+
+          background: #020812;
+        }
+
+        /* ================= BACKGROUND ================= */
+
+        .page-bg {
+          position: fixed;
+          inset: 0;
+
+          z-index: 0;
+
+          pointer-events: none;
+        }
+
+        .bg-image {
+          position: absolute;
+          inset: 0;
+
+          background:
+            url("/images/dental-clinic-bg.png")
+            center / cover no-repeat;
+
+          opacity: .10;
+        }
+
+        .bg-overlay {
+          position: absolute;
+          inset: 0;
+
+          background:
+            radial-gradient(
+              circle at 70% 20%,
+              rgba(0,170,255,.08),
+              transparent 35%
+            ),
+            linear-gradient(
+              135deg,
+              #020812,
+              #031221 50%,
+              #010710
+            );
+        }
+
+        .bg-grid {
+          position: absolute;
+          inset: 0;
+
+          opacity: .025;
+
+          background-image:
+            linear-gradient(
+              rgba(0,220,255,.8) 1px,
+              transparent 1px
+            ),
+            linear-gradient(
+              90deg,
+              rgba(0,220,255,.8) 1px,
+              transparent 1px
+            );
+
+          background-size: 55px 55px;
+        }
+
+        .glow {
+          position: absolute;
+
+          border-radius: 50%;
+
+          filter: blur(120px);
+        }
+
+        .glow-1 {
+          width: 500px;
+          height: 500px;
+
+          right: 20%;
+          top: -250px;
+
+          background:
+            rgba(0,190,255,.10);
+        }
+
+        .glow-2 {
+          width: 400px;
+          height: 400px;
+
+          left: 5%;
+          bottom: -200px;
+
+          background:
+            rgba(0,90,255,.08);
+        }
+
+        /* ================= WRAPPER ================= */
+
+        .content-wrapper {
+          position: relative;
+
+          z-index: 2;
+
+          width: 100%;
+          max-width: 1450px;
+
+          margin: 0 auto;
+
+          padding:
+            35px
+            35px
+            50px;
+        }
+
+        /* ================= HERO ================= */
+
+        .patient-hero {
+          min-height: 430px;
+
+          position: relative;
+
+          overflow: hidden;
+
+          border-radius: 22px;
+
+          border:
+            1px solid
+            rgba(0,210,255,.18);
+
+          background: #031221;
+
+          box-shadow:
+            0 25px 80px
+            rgba(0,0,0,.35);
+        }
+
+        .hero-bg {
+          position: absolute;
+          inset: 0;
+
+          background:
+            url("/images/dental-clinic-bg.png")
+            center / cover no-repeat;
+
+          opacity: .38;
+        }
+
+        .hero-overlay {
+          position: absolute;
+          inset: 0;
+
+          background:
+            linear-gradient(
+              90deg,
+              #031221 0%,
+              rgba(3,18,33,.97) 34%,
+              rgba(3,18,33,.60) 63%,
+              rgba(3,18,33,.15) 100%
+            );
+        }
+
+        .hero-text {
+          position: relative;
+
+          z-index: 5;
+
+          width: 44%;
+
+          padding:
+            65px
+            50px;
+        }
+
+        .welcome {
+          color: #5eeaff;
+
+          font-size: 11px;
+
+          letter-spacing: 3px;
+
+          font-weight: 800;
+        }
+
+        .hero-text h1 {
+          margin:
+            17px 0
+            12px;
+
+          font-size:
+            clamp(40px, 4vw, 58px);
+
+          line-height: 1.05;
+
+          font-weight: 900;
+        }
+
+        .hero-text h1 span {
+          display: block;
+
+          color: #0da8ff;
+
+          margin-top: 7px;
+
+          text-shadow:
+            0 0 35px
+            rgba(0,160,255,.25);
+        }
+
+        .hero-text p {
+          color: #9aabba;
+
+          font-size: 15px;
+
+          line-height: 2;
+
+          margin: 0;
+        }
+
+        .smart-care {
+          margin-top: 20px;
+
+          display: flex;
+
+          align-items: center;
+
+          gap: 8px;
+
+          color: #19dcff;
+
+          font-size: 9px;
+
+          letter-spacing: 1.5px;
+
+          font-weight: 800;
+        }
+
+        .hero-buttons {
+          display: flex;
+
+          gap: 10px;
+
+          margin-top: 28px;
+        }
+
+        .primary-btn,
+        .secondary-btn {
+          height: 45px;
+
+          border-radius: 9px;
+
+          padding: 0 19px;
+
+          display: flex;
+
+          align-items: center;
+
+          justify-content: center;
+
+          gap: 8px;
+
+          font-size: 10px;
+
+          font-weight: 800;
+
+          cursor: pointer;
+
+          transition: .25s;
+        }
+
+        .primary-btn {
+          color: white;
+
+          border:
+            1px solid
+            #129dff;
+
+          background:
+            linear-gradient(
+              135deg,
+              #1094ff,
+              #075bd0
+            );
+
+          box-shadow:
+            0 8px 30px
+            rgba(0,130,255,.25);
+        }
+
+        .primary-btn:hover {
+          transform: translateY(-2px);
+        }
+
+        .secondary-btn {
+          color: #c7d5df;
+
+          border:
+            1px solid
+            rgba(0,210,255,.15);
+
+          background:
+            rgba(255,255,255,.035);
+        }
+
+        .secondary-btn:hover {
+          background:
+            rgba(0,210,255,.06);
+        }
+
+        /* =====================================================
+           CHILD PHOTO
+        ===================================================== */
+
+        .child-area {
+          position: absolute;
+
+          right: 27%;
+          bottom: 0;
+
+          width: 380px;
+          height: 100%;
+
+          z-index: 4;
+
+          display: flex;
+
+          align-items: flex-end;
+          justify-content: center;
+
+          pointer-events: none;
+        }
+
+        .child-aura {
+          position: absolute;
+
+          width: 330px;
+          height: 330px;
+
+          bottom: 35px;
+
+          border-radius: 50%;
+
+          background:
+            radial-gradient(
+              circle,
+              rgba(0,210,255,.18) 0%,
+              rgba(0,120,255,.08) 45%,
+              transparent 72%
+            );
+
+          filter: blur(30px);
+        }
+
+        .child-circle {
+          position: absolute;
+
+          left: 50%;
+          top: 50%;
+
+          transform:
+            translate(-50%, -45%);
+
+          border-radius: 50%;
+
+          border:
+            1px solid
+            rgba(0,220,255,.14);
+        }
+
+        .circle-1 {
+          width: 360px;
+          height: 360px;
+        }
+
+        .circle-2 {
+          width: 285px;
+          height: 285px;
+
+          border-color:
+            rgba(0,130,255,.16);
+        }
+
+        .child-photo {
+          position: relative;
+
+          z-index: 10;
+
+          width: 330px;
+          height: 420px;
+
+          display: flex;
+
+          align-items: flex-end;
+          justify-content: center;
+
+          overflow: visible;
+        }
+
+        .child-photo img {
+          display: block;
+
+          width: 100%;
+          height: 100%;
+
+          object-fit: contain;
+
+          object-position:
+            center bottom;
+
+          background: transparent;
+
+          border: none;
+
+          outline: none;
+
+          filter:
+            drop-shadow(
+              0 20px 35px
+              rgba(0,0,0,.55)
+            )
+            drop-shadow(
+              0 0 28px
+              rgba(0,190,255,.18)
+            );
+        }
+
+        /* ================= TOOTH ================= */
+
+        .tooth-area {
+          position: absolute;
+
+          right: 4%;
+          top: 55px;
+
+          width: 290px;
+          height: 300px;
+
+          z-index: 6;
+
+          display: flex;
+
+          align-items: center;
+          justify-content: center;
+        }
+
+        .tooth-icon {
+          width: 135px;
+
+          position: relative;
+
+          z-index: 5;
+
+          filter:
+            drop-shadow(
+              0 0 18px
+              rgba(0,220,255,.95)
+            )
+            drop-shadow(
+              0 0 45px
+              rgba(0,150,255,.55)
+            );
+        }
+
+        .tooth-icon svg {
+          display: block;
+
+          width: 100%;
+          height: auto;
+        }
+
+        .tooth-orbit {
+          position: absolute;
+
+          border:
+            1px solid
+            rgba(0,210,255,.30);
+
+          border-radius: 50%;
+        }
+
+        .orbit-1 {
+          width: 240px;
+          height: 90px;
+
+          transform:
+            rotate(-20deg);
+        }
+
+        .orbit-2 {
+          width: 250px;
+          height: 105px;
+
+          transform:
+            rotate(50deg);
+
+          border-color:
+            rgba(0,130,255,.22);
+        }
+
+        .orbit-3 {
+          width: 160px;
+          height: 250px;
+
+          transform:
+            rotate(70deg);
+
+          border-color:
+            rgba(0,230,255,.15);
+        }
+
+        .ai-card {
+          position: absolute;
+
+          left: 0;
+          bottom: 0;
+
+          z-index: 10;
+
+          display: flex;
+
+          align-items: center;
+
+          gap: 8px;
+
+          padding:
+            9px 12px;
+
+          border-radius: 8px;
+
+          color: #18e2ff;
+
+          border:
+            1px solid
+            rgba(0,220,255,.16);
+
+          background:
+            rgba(0,15,28,.78);
+
+          backdrop-filter:
+            blur(15px);
+        }
+
+        .ai-card strong,
+        .ai-card span {
+          display: block;
+
+          font-size: 8px;
+        }
+
+        .ai-card span {
+          color: #149fc9;
+
+          margin-top: 3px;
+        }
+
+        /* ================= STATS ================= */
+
+        .stats {
+          display: grid;
+
+          grid-template-columns:
+            repeat(4, 1fr);
+
+          gap: 12px;
+
+          margin-top: 14px;
+        }
+
+        .stat {
+          min-height: 105px;
+
+          position: relative;
+
+          overflow: hidden;
+
+          border-radius: 13px;
+
+          border:
+            1px solid
+            rgba(0,210,255,.12);
+
+          background:
+            linear-gradient(
+              145deg,
+              rgba(4,22,37,.96),
+              rgba(2,12,23,.96)
+            );
+
+          display: flex;
+
+          align-items: center;
+
+          gap: 14px;
+
+          padding: 17px;
+        }
+
+        .stat::after {
+          content: "";
+
+          position: absolute;
+
+          width: 120px;
+          height: 120px;
+
+          border-radius: 50%;
+
+          right: -60px;
+          top: -60px;
+
+          filter: blur(40px);
+
+          opacity: .22;
+        }
+
+        .stat.yellow::after {
+          background: #ffd21f;
+        }
+
+        .stat.cyan::after {
+          background: #00dfff;
+        }
+
+        .stat.green::after {
+          background: #00e6a1;
+        }
+
+        .stat.purple::after {
+          background: #a84cff;
+        }
+
+        .stat-icon {
+          width: 52px;
+          height: 52px;
+
+          flex: 0 0 52px;
+
+          border-radius: 50%;
+
+          display: flex;
+
+          align-items: center;
+          justify-content: center;
+
+          border:
+            1px solid currentColor;
+        }
+
+        .yellow .stat-icon {
+          color: #ffd21f;
+        }
+
+        .cyan .stat-icon {
+          color: #14dfff;
+        }
+
+        .green .stat-icon {
+          color: #1ce5a5;
+        }
+
+        .purple .stat-icon {
+          color: #b65cff;
+        }
+
+        .stat-title {
+          color: #718195;
+
+          font-size: 9px;
+        }
+
+        .stat-value {
+          margin-top: 3px;
+
+          font-size: 27px;
+
+          font-weight: 900;
+        }
+
+        .stat-sub {
+          color: #506176;
+
+          font-size: 8px;
+
+          margin-top: 2px;
+        }
+
+        /* ================= CARDS ================= */
+
+        .cards-grid {
+          margin-top: 14px;
+
+          display: grid;
+
+          grid-template-columns:
+            minmax(0, 1.65fr)
+            minmax(300px, .9fr);
+
+          gap: 12px;
+        }
+
+        .card {
+          position: relative;
+
+          overflow: hidden;
+
+          border-radius: 13px;
+
+          border:
+            1px solid
+            rgba(0,210,255,.11);
+
+          background:
+            linear-gradient(
+              145deg,
+              rgba(4,21,35,.96),
+              rgba(2,11,21,.96)
+            );
+
+          padding: 21px;
+
+          box-shadow:
+            0 15px 50px
+            rgba(0,0,0,.16);
+        }
+
+        .card::before {
+          content: "";
+
+          position: absolute;
+
+          top: 0;
+          left: 25%;
+          right: 25%;
+
+          height: 1px;
+
+          background:
+            linear-gradient(
+              90deg,
+              transparent,
+              rgba(0,220,255,.55),
+              transparent
+            );
+        }
+
+        .appointment-card {
+          grid-row: span 2;
+        }
+
+        .card-title {
+          display: flex;
+
+          align-items: center;
+
+          gap: 10px;
+        }
+
+        .card-title-icon {
+          width: 39px;
+          height: 39px;
+
+          border-radius: 9px;
+
+          display: flex;
+
+          align-items: center;
+          justify-content: center;
+
+          color: #20ddff;
+
+          border:
+            1px solid
+            rgba(0,210,255,.12);
+
+          background:
+            rgba(0,210,255,.05);
+        }
+
+        .card-title strong {
+          display: block;
+
+          font-size: 13px;
+        }
+
+        .card-title span {
+          display: block;
+
+          color: #178db6;
+
+          font-size: 7px;
+
+          letter-spacing: 1px;
+
+          margin-top: 4px;
+        }
+
+        /* ================= APPOINTMENT ================= */
+
+        .appointment-top {
+          margin-top: 22px;
+
+          display: flex;
+
+          align-items: center;
+
+          justify-content: space-between;
+        }
+
+        .doctor {
+          display: flex;
+
+          align-items: center;
+
+          gap: 13px;
+        }
+
+        .doctor-image {
+          width: 67px;
+          height: 67px;
+
+          border-radius: 50%;
+
+          display: flex;
+
+          align-items: center;
+          justify-content: center;
+
+          color: #2edfff;
+
+          border:
+            1px solid
+            #087fc9;
+
+          background:
+            radial-gradient(
+              circle,
+              rgba(0,160,255,.20),
+              rgba(0,40,80,.35)
+            );
+        }
+
+        .doctor h3 {
+          margin: 0;
+
+          font-size: 14px;
+        }
+
+        .doctor p {
+          margin: 4px 0;
+
+          color: #607286;
+
+          font-size: 9px;
+        }
+
+        .rating {
+          display: flex;
+
+          align-items: center;
+
+          gap: 4px;
+
+          color: #ffd21c;
+
+          font-size: 9px;
+        }
+
+        .appointment-status {
+          padding:
+            7px 12px;
+
+          border-radius: 20px;
+
+          font-size: 8px;
+
+          font-weight: 900;
+        }
+
+        .appointment-status.pending {
+          color: #ffd21c;
+
+          border:
+            1px solid
+            rgba(255,210,30,.20);
+
+          background:
+            rgba(255,210,30,.05);
+        }
+
+        .appointment-status.confirmed {
+          color: #2de5a0;
+
+          border:
+            1px solid
+            rgba(45,229,160,.18);
+
+          background:
+            rgba(45,229,160,.05);
+        }
+
+        .appointment-status.rejected {
+          color: #ff5555;
+
+          border:
+            1px solid
+            rgba(255,85,85,.18);
+
+          background:
+            rgba(255,85,85,.05);
+        }
+
+        .appointment-info {
+          display: grid;
+
+          grid-template-columns:
+            repeat(2, 1fr);
+
+          gap: 9px;
+
+          margin-top: 20px;
+        }
+
+        .info-box {
+          padding: 12px;
+
+          border-radius: 8px;
+
+          border:
+            1px solid
+            rgba(255,255,255,.045);
+
+          background:
+            rgba(255,255,255,.018);
+        }
+
+        .info-head {
+          display: flex;
+
+          align-items: center;
+
+          gap: 6px;
+
+          color: #647589;
+
+          font-size: 8px;
+        }
+
+        .info-head svg {
+          width: 14px;
+
+          color: #15d9ff;
+        }
+
+        .info-value {
+          color: #d6e1ea;
+
+          font-size: 9px;
+
+          font-weight: 700;
+
+          margin-top: 7px;
+        }
+
+        .appointment-actions {
+          display: flex;
+
+          gap: 9px;
+
+          margin-top: 15px;
+        }
+
+        .confirm,
+        .reject {
+          height: 39px;
+
+          padding: 0 20px;
+
+          border-radius: 8px;
+
+          display: flex;
+
+          align-items: center;
+          justify-content: center;
+
+          gap: 7px;
+
+          font-size: 9px;
+
+          font-weight: 800;
+
+          cursor: pointer;
+        }
+
+        .confirm {
+          color: white;
+
+          border:
+            1px solid
+            #1297ff;
+
+          background:
+            linear-gradient(
+              135deg,
+              #087fff,
+              #075bd0
+            );
+        }
+
+        .reject {
+          color: #ff5555;
+
+          border:
+            1px solid
+            rgba(255,60,60,.22);
+
+          background:
+            rgba(255,50,50,.035);
+        }
+
+        .reject-box {
+          margin-top: 15px;
+        }
+
+        .reject-box textarea {
+          width: 100%;
+          height: 85px;
+
+          resize: none;
+
+          outline: none;
+
+          border-radius: 8px;
+
+          border:
+            1px solid
+            rgba(255,255,255,.07);
+
+          background: #010812;
+
+          color: white;
+
+          padding: 11px;
+
+          font-size: 10px;
+        }
+
+        .reject-buttons {
+          display: flex;
+
+          gap: 8px;
+
+          margin-top: 8px;
+        }
+
+        .send-reject,
+        .cancel-reject {
+          height: 34px;
+
+          padding: 0 16px;
+
+          border-radius: 7px;
+
+          cursor: pointer;
+
+          font-size: 9px;
+
+          font-weight: 700;
+        }
+
+        .send-reject {
+          color: white;
+
+          background: #d92f3d;
+
+          border:
+            1px solid
+            #ff4454;
+        }
+
+        .cancel-reject {
+          color: #8290a0;
+
+          background:
+            rgba(255,255,255,.04);
+
+          border:
+            1px solid
+            rgba(255,255,255,.06);
+        }
+
+        .success,
+        .error {
+          margin-top: 13px;
+
+          padding:
+            10px 13px;
+
+          border-radius: 7px;
+
+          display: flex;
+
+          align-items: center;
+
+          gap: 7px;
+
+          font-size: 9px;
+
+          font-weight: 700;
+        }
+
+        .success {
+          color: #2de5a0;
+
+          background:
+            rgba(45,229,160,.04);
+
+          border:
+            1px solid
+            rgba(45,229,160,.14);
+        }
+
+        .error {
+          color: #ff5555;
+
+          background:
+            rgba(255,85,85,.04);
+
+          border:
+            1px solid
+            rgba(255,85,85,.14);
+        }
+
+        /* ================= PROFILE ================= */
+
+        .profile {
+          display: flex;
+
+          align-items: center;
+
+          gap: 13px;
+
+          margin-top: 20px;
+        }
+
+        .profile-image {
+          width: 68px;
+          height: 68px;
+
+          flex: 0 0 68px;
+
+          border-radius: 50%;
+
+          overflow: hidden;
+
+          border:
+            2px solid
+            #079bdf;
+
+          background:
+            #061a2a;
+
+          box-shadow:
+            0 0 25px
+            rgba(0,160,255,.18);
+        }
+
+        .profile-image img {
+          width: 100%;
+          height: 100%;
+
+          display: block;
+
+          object-fit: cover;
+
+          object-position:
+            center top;
+        }
+
+        .profile h3 {
+          margin: 0;
+
+          font-size: 14px;
+        }
+
+        .profile p {
+          margin-top: 5px;
+
+          color: #5f7184;
+
+          font-size: 8px;
+        }
+
+        .profile-data {
+          display: grid;
+
+          grid-template-columns:
+            1fr 1fr;
+
+          gap: 7px;
+
+          margin-top: 16px;
+        }
+
+        .mini-data {
+          padding: 10px;
+
+          border-radius: 7px;
+
+          border:
+            1px solid
+            rgba(255,255,255,.045);
+
+          background:
+            rgba(255,255,255,.018);
+        }
+
+        .mini-data span {
+          display: block;
+
+          color: #5a6a7d;
+
+          font-size: 7px;
+        }
+
+        .mini-data strong {
+          display: block;
+
+          color: #d6e1ea;
+
+          font-size: 10px;
+
+          margin-top: 4px;
+        }
+
+        /* ================= TREATMENT ================= */
+
+        .treatment-card {
+          text-align: center;
+        }
+
+        .progress {
+          position: relative;
+
+          width: 155px;
+          height: 155px;
+
+          margin:
+            12px
+            auto
+            5px;
+        }
+
+        .progress svg {
+          width: 100%;
+          height: 100%;
+
+          transform:
+            rotate(-90deg);
+        }
+
+        .progress-bg {
+          fill: none;
+
+          stroke:
+            rgba(255,255,255,.045);
+
+          stroke-width: 9;
+        }
+
+        .progress-bar {
+          fill: none;
+
+          stroke: #14d5ff;
+
+          stroke-width: 9;
+
+          stroke-linecap: round;
+
+          stroke-dasharray: 440;
+
+          filter:
+            drop-shadow(
+              0 0 7px
+              rgba(0,210,255,.8)
+            );
+        }
+
+        .progress-number {
+          position: absolute;
+
+          inset: 0;
+
+          display: flex;
+
+          align-items: center;
+          justify-content: center;
+
+          flex-direction: column;
+        }
+
+        .progress-number strong {
+          font-size: 28px;
+        }
+
+        .progress-number span {
+          color: #198db6;
+
+          font-size: 7px;
+
+          margin-top: 2px;
+        }
+
+        .treatment-message strong {
+          display: block;
+
+          color: #18c9ff;
+
+          font-size: 10px;
+        }
+
+        .treatment-message span {
+          display: block;
+
+          color: #657386;
+
+          font-size: 8px;
+
+          margin-top: 5px;
+        }
+
+        /* ================= ACTIVITY ================= */
+
+        .activity-list {
+          margin-top: 14px;
+        }
+
+        .activity-item {
+          min-height: 53px;
+
+          display: flex;
+
+          align-items: center;
+
+          gap: 10px;
+
+          border-bottom:
+            1px solid
+            rgba(255,255,255,.04);
+        }
+
+        .activity-icon {
+          width: 32px;
+          height: 32px;
+
+          flex: 0 0 32px;
+
+          border-radius: 8px;
+
+          display: flex;
+
+          align-items: center;
+          justify-content: center;
+
+          color: #18dfff;
+
+          border:
+            1px solid
+            rgba(0,210,255,.09);
+
+          background:
+            rgba(0,210,255,.045);
+        }
+
+        .activity-icon svg {
+          width: 14px;
+        }
+
+        .activity-content {
+          flex: 1;
+
+          min-width: 0;
+        }
+
+        .activity-content strong {
+          display: block;
+
+          color: #c8d4de;
+
+          font-size: 9px;
+        }
+
+        .activity-content p {
+          color: #59697b;
+
+          font-size: 7px;
+
+          margin: 3px 0 0;
+
+          white-space: nowrap;
+
+          overflow: hidden;
+
+          text-overflow: ellipsis;
+        }
+
+        .activity-time {
+          color: #47576a;
+
+          font-size: 7px;
+        }
+
+        .view-all {
+          display: flex;
+
+          align-items: center;
+
+          gap: 3px;
+
+          margin-top: 10px;
+
+          border: 0;
+
+          background: transparent;
+
+          color: #10cfff;
+
+          font-size: 8px;
+
+          cursor: pointer;
+        }
+
+        /* ================= QUICK ================= */
+
+        .quick-grid {
+          display: grid;
+
+          grid-template-columns:
+            repeat(3, 1fr);
+
+          gap: 7px;
+
+          margin-top: 15px;
+        }
+
+        .quick-button {
+          min-height: 76px;
+
+          border-radius: 8px;
+
+          border:
+            1px solid
+            rgba(0,210,255,.09);
+
+          background:
+            rgba(255,255,255,.018);
+
+          display: flex;
+
+          flex-direction: column;
+
+          align-items: center;
+          justify-content: center;
+
+          gap: 7px;
+
+          cursor: pointer;
+
+          transition: .2s;
+        }
+
+        .quick-button:hover {
+          transform: translateY(-3px);
+
+          background:
+            rgba(0,210,255,.04);
+
+          border-color:
+            rgba(0,210,255,.25);
+        }
+
+        .quick-button svg {
+          width: 19px;
+        }
+
+        .quick-button span {
+          font-size: 7px;
+
+          font-weight: 700;
+        }
+
+        .quick-button.blue {
+          color: #4c9cff;
+        }
+
+        .quick-button.cyan {
+          color: #19dfff;
+        }
+
+        .quick-button.green {
+          color: #21dfa0;
+        }
+
+        .quick-button.teal {
+          color: #18d8d0;
+        }
+
+        .quick-button.yellow {
+          color: #ffd21c;
+        }
+
+        .quick-button.purple {
+          color: #ad62ff;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 1100px) {
+
+          .content-wrapper {
+            padding: 25px;
+          }
+
+          .hero-text {
+            width: 50%;
+          }
+
+          .child-area {
+            right: 25%;
+          }
+
+          .tooth-area {
+            right: 2%;
+
+            transform:
+              scale(.9);
+          }
+        }
+
+        @media (max-width: 900px) {
+
+          .stats {
+            grid-template-columns:
+              repeat(2, 1fr);
+          }
+
+          .cards-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .appointment-card {
+            grid-row: auto;
+          }
+
+          .hero-text {
+            width: 65%;
+          }
+
+          .child-area {
+            right: 35%;
+
+            opacity: .45;
+          }
+
+          .tooth-area {
+            opacity: .55;
+          }
+        }
+
+        @media (max-width: 650px) {
+
+          .content-wrapper {
+            padding: 12px;
+          }
+
+          .patient-hero {
+            min-height: 560px;
+          }
+
+          .hero-text {
+            width: 100%;
+
+            padding:
+              35px 25px;
+          }
+
+          .hero-text h1 {
+            font-size: 40px;
+          }
+
+          .hero-buttons {
+            flex-direction: column;
+
+            width: 190px;
+          }
+
+          /* الصورة على الموبايل */
+
+          .child-area {
+            right: 8%;
+
+            width: 270px;
+            height: 52%;
+
+            opacity: .32;
+          }
+
+          .child-photo {
+            width: 250px;
+            height: 300px;
+          }
+
+          .child-aura {
+            width: 250px;
+            height: 250px;
+          }
+
+          .circle-1 {
+            width: 270px;
+            height: 270px;
+          }
+
+          .circle-2 {
+            width: 210px;
+            height: 210px;
+          }
+
+          .tooth-area {
+            right: -45px;
+
+            bottom: 5px;
+            top: auto;
+
+            transform:
+              scale(.65);
+
+            opacity: .7;
+          }
+
+          .stats {
+            grid-template-columns:
+              1fr 1fr;
+
+            gap: 8px;
+          }
+
+          .stat {
+            min-height: 90px;
+
+            padding: 12px;
+
+            gap: 9px;
+          }
+
+          .stat-icon {
+            width: 43px;
+            height: 43px;
+
+            flex-basis: 43px;
+          }
+
+          .stat-value {
+            font-size: 22px;
+          }
+
+          .appointment-top {
+            flex-direction: column;
+
+            align-items: flex-start;
+
+            gap: 12px;
+          }
+
+          .appointment-info {
+            grid-template-columns: 1fr;
+          }
+
+          .appointment-actions {
+            flex-direction: column;
+          }
+
+          .quick-grid {
+            grid-template-columns:
+              repeat(2, 1fr);
+          }
+        }
+
+      `}</style>
+
     </div>
   );
 }
 
 
-/* =====================================================
-   FLOATING SHAPE
-===================================================== */
+/* ============================================================
+   STAT CARD
+============================================================ */
 
-function FloatingShape({
-  children,
-  className,
-  delay,
-}) {
-  return (
-    <motion.div
-      animate={{
-        y: [0, -18, 0],
-        rotate: [0, 8, -8, 0],
-      }}
-      transition={{
-        duration: 5,
-        delay,
-        repeat: Infinity,
-        ease: "easeInOut",
-      }}
-      className={`
-        fixed
-        ${className}
-        text-3xl
-        opacity-40
-        pointer-events-none
-        z-0
-      `}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-
-/* =====================================================
-   BADGE
-===================================================== */
-
-function Badge({ icon, children }) {
-  return (
-    <motion.div
-      whileHover={{
-        scale: 1.05,
-        y: -2,
-      }}
-      className="
-        flex
-        items-center
-        gap-2
-        px-4
-        py-2.5
-        rounded-full
-        bg-white/20
-        backdrop-blur-sm
-        border
-        border-white/20
-        text-sm
-        font-bold
-      "
-    >
-      <span>{icon}</span>
-      {children}
-    </motion.div>
-  );
-}
-
-
-/* =====================================================
-   ANIMATED STAT
-===================================================== */
-
-function AnimatedStat({
+function StatCard({
   icon,
-  emoji,
   title,
   value,
-  description,
-  bg,
-  iconBg,
-  iconColor,
+  subtitle,
+  type,
 }) {
   return (
     <motion.div
-      variants={{
-        hidden: {
-          opacity: 0,
-          y: 25,
-        },
-        visible: {
-          opacity: 1,
-          y: 0,
-        },
-      }}
       whileHover={{
-        y: -6,
-        scale: 1.02,
+        y: -3,
       }}
-      transition={{
-        type: "spring",
-        stiffness: 250,
-      }}
-      className={`
-        relative
-        overflow-hidden
-        bg-gradient-to-br
-        ${bg}
-        rounded-[2rem]
-        p-6
-        border
-        border-white
-        shadow-lg
-      `}
+      className={`stat ${type}`}
     >
 
-      <div className="
-        absolute
-        -left-3
-        -bottom-4
-        text-6xl
-        opacity-10
-      ">
-        {emoji}
-      </div>
-
-      <div className="relative z-10">
-
-        <div className="
-          flex
-          items-center
-          justify-between
-        ">
-
-          <div
-            className={`
-              w-13
-              h-13
-              rounded-2xl
-              ${iconBg}
-              ${iconColor}
-              flex
-              items-center
-              justify-center
-            `}
-          >
-            {icon}
-          </div>
-
-          <motion.span
-            animate={{
-              rotate: [0, 8, -8, 0],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-            }}
-            className="text-3xl"
-          >
-            {emoji}
-          </motion.span>
-
-        </div>
-
-        <p className="text-sm text-slate-400 mt-5">
-          {title}
-        </p>
-
-        <h2 className="
-          text-2xl
-          font-black
-          text-slate-800
-          mt-1
-        ">
-          {value}
-        </h2>
-
-        <p className="text-xs text-slate-400 mt-2">
-          {description}
-        </p>
-
-      </div>
-
-    </motion.div>
-  );
-}
-
-
-/* =====================================================
-   STATUS
-===================================================== */
-
-function StatusBadge({ status }) {
-  if (status === "confirmed") {
-    return (
-      <span className="
-        px-3
-        py-1.5
-        rounded-full
-        bg-green-50
-        text-green-600
-        text-xs
-        font-bold
-      ">
-        تم التأكيد ✅
-      </span>
-    );
-  }
-
-  if (status === "rejected") {
-    return (
-      <span className="
-        px-3
-        py-1.5
-        rounded-full
-        bg-red-50
-        text-red-600
-        text-xs
-        font-bold
-      ">
-        تم الرفض
-      </span>
-    );
-  }
-
-  return (
-    <span className="
-      px-3
-      py-1.5
-      rounded-full
-      bg-yellow-50
-      text-yellow-600
-      text-xs
-      font-bold
-    ">
-      محتاج ردك
-    </span>
-  );
-}
-
-
-/* =====================================================
-   ANIMATED SECTION
-===================================================== */
-
-function AnimatedSection({ children }) {
-  return (
-    <motion.section
-      initial={{
-        opacity: 0,
-        y: 25,
-      }}
-      whileInView={{
-        opacity: 1,
-        y: 0,
-      }}
-      viewport={{
-        once: true,
-        margin: "-80px",
-      }}
-      transition={{
-        duration: 0.5,
-      }}
-      className="
-        bg-white
-        rounded-[2rem]
-        border
-        border-sky-100
-        shadow-lg
-        p-6
-      "
-    >
-      {children}
-    </motion.section>
-  );
-}
-
-
-/* =====================================================
-   SECTION TITLE
-===================================================== */
-
-function SectionTitle({
-  icon,
-  title,
-  subtitle,
-}) {
-  return (
-    <div className="flex items-center gap-3">
-
-      <div
-        className="
-          w-11
-          h-11
-          rounded-2xl
-          bg-sky-50
-          text-sky-600
-          flex
-          items-center
-          justify-center
-        "
-      >
+      <div className="stat-icon">
         {icon}
       </div>
 
       <div>
 
-        <h2 className="font-black text-slate-800">
+        <div className="stat-title">
           {title}
-        </h2>
+        </div>
 
-        <p className="text-xs text-slate-400 mt-1">
+        <div className="stat-value">
+          {value}
+        </div>
+
+        <div className="stat-sub">
           {subtitle}
-        </p>
+        </div>
+
+      </div>
+
+    </motion.div>
+  );
+}
+
+
+/* ============================================================
+   CARD TITLE
+============================================================ */
+
+function CardTitle({
+  icon,
+  title,
+  english,
+}) {
+  return (
+    <div className="card-title">
+
+      <div className="card-title-icon">
+        {icon}
+      </div>
+
+      <div>
+
+        <strong>
+          {title}
+        </strong>
+
+        <span>
+          {english}
+        </span>
 
       </div>
 
@@ -1580,9 +2408,9 @@ function SectionTitle({
 }
 
 
-/* =====================================================
+/* ============================================================
    INFO BOX
-===================================================== */
+============================================================ */
 
 function InfoBox({
   icon,
@@ -1590,218 +2418,291 @@ function InfoBox({
   value,
 }) {
   return (
-    <motion.div
-      whileHover={{
-        scale: 1.02,
-      }}
-      className="
-        bg-white
-        rounded-2xl
-        p-3
-        border
-        border-sky-100
-      "
-    >
+    <div className="info-box">
 
-      <div className="
-        flex
-        items-center
-        gap-2
-        text-sky-500
-      ">
+      <div className="info-head">
         {icon}
-
-        <span className="text-xs text-slate-400">
-          {title}
-        </span>
+        {title}
       </div>
 
-      <p className="
-        font-bold
-        text-slate-700
-        text-sm
-        mt-2
-      ">
+      <div className="info-value">
         {value}
-      </p>
+      </div>
 
-    </motion.div>
+    </div>
   );
 }
 
 
-/* =====================================================
-   NOTIFICATION
-===================================================== */
+/* ============================================================
+   APPOINTMENT STATUS
+============================================================ */
 
-function Notification({
+function AppointmentStatus({
+  status,
+}) {
+  if (status === "confirmed") {
+    return (
+      <span className="appointment-status confirmed">
+        CONFIRMED
+      </span>
+    );
+  }
+
+  if (status === "rejected") {
+    return (
+      <span className="appointment-status rejected">
+        REJECTED
+      </span>
+    );
+  }
+
+  return (
+    <span className="appointment-status pending">
+      PENDING
+    </span>
+  );
+}
+
+
+/* ============================================================
+   MINI DATA
+============================================================ */
+
+function MiniData({
+  title,
+  value,
+}) {
+  return (
+    <div className="mini-data">
+
+      <span>
+        {title}
+      </span>
+
+      <strong>
+        {value}
+      </strong>
+
+    </div>
+  );
+}
+
+
+/* ============================================================
+   ACTIVITY
+============================================================ */
+
+function ActivityItem({
   icon,
   title,
   text,
   time,
 }) {
   return (
-    <motion.div
-      whileHover={{
-        x: -4,
-        backgroundColor: "#f0f9ff",
-      }}
-      className="
-        flex
-        gap-3
-        p-4
-        rounded-2xl
-        cursor-pointer
-      "
-    >
+    <div className="activity-item">
 
-      <div
-        className="
-          w-10
-          h-10
-          rounded-xl
-          bg-sky-50
-          text-sky-500
-          flex
-          items-center
-          justify-center
-          shrink-0
-        "
-      >
+      <div className="activity-icon">
         {icon}
       </div>
 
-      <div className="flex-1">
+      <div className="activity-content">
 
-        <div className="
-          flex
-          justify-between
-          gap-2
-        ">
+        <strong>
+          {title}
+        </strong>
 
-          <h3 className="
-            font-bold
-            text-sm
-            text-slate-700
-          ">
-            {title}
-          </h3>
-
-          <span className="
-            text-[10px]
-            text-slate-400
-            whitespace-nowrap
-          ">
-            {time}
-          </span>
-
-        </div>
-
-        <p className="
-          text-xs
-          text-slate-400
-          mt-1
-          leading-5
-        ">
+        <p>
           {text}
         </p>
 
       </div>
 
-    </motion.div>
+      <span className="activity-time">
+        {time}
+      </span>
+
+    </div>
   );
 }
 
 
-/* =====================================================
-   ACTION CARD
-===================================================== */
+/* ============================================================
+   QUICK BUTTON
+============================================================ */
 
-function ActionCard({
+function QuickButton({
   icon,
-  emoji,
-  title,
-  description,
+  text,
+  type,
 }) {
   return (
     <motion.button
-      variants={{
-        hidden: {
-          opacity: 0,
-          y: 20,
-        },
-        visible: {
-          opacity: 1,
-          y: 0,
-        },
-      }}
       whileHover={{
-        y: -6,
-        scale: 1.02,
+        y: -3,
       }}
       whileTap={{
-        scale: 0.97,
+        scale: .97,
       }}
-      className="
-        relative
-        overflow-hidden
-        bg-white
-        rounded-[2rem]
-        p-5
-        text-start
-        border
-        border-sky-100
-        shadow-lg
-      "
+      className={`quick-button ${type}`}
     >
+      {icon}
 
-      <div className="
-        absolute
-        left-3
-        top-2
-        text-3xl
-        opacity-10
-      ">
-        {emoji}
-      </div>
-
-      <div
-        className="
-          relative
-          z-10
-          w-12
-          h-12
-          rounded-2xl
-          bg-sky-50
-          text-sky-500
-          flex
-          items-center
-          justify-center
-        "
-      >
-        {icon}
-      </div>
-
-      <h3 className="
-        relative
-        z-10
-        font-bold
-        text-slate-800
-        mt-4
-      ">
-        {title}
-      </h3>
-
-      <p className="
-        relative
-        z-10
-        text-xs
-        text-slate-400
-        mt-1
-      ">
-        {description}
-      </p>
+      <span>
+        {text}
+      </span>
 
     </motion.button>
+  );
+}
+
+
+/* ============================================================
+   TOOTH SVG
+============================================================ */
+
+function ToothSVG() {
+  return (
+    <svg
+      viewBox="0 0 180 210"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+
+      <defs>
+
+        <linearGradient
+          id="toothGradient"
+          x1="30"
+          y1="20"
+          x2="145"
+          y2="190"
+          gradientUnits="userSpaceOnUse"
+        >
+
+          <stop
+            stopColor="#F4FFFF"
+          />
+
+          <stop
+            offset=".35"
+            stopColor="#68F3FF"
+          />
+
+          <stop
+            offset=".7"
+            stopColor="#00BFFF"
+          />
+
+          <stop
+            offset="1"
+            stopColor="#0075FF"
+          />
+
+        </linearGradient>
+
+        <filter
+          id="toothGlow"
+          x="-50%"
+          y="-50%"
+          width="200%"
+          height="200%"
+        >
+
+          <feGaussianBlur
+            stdDeviation="5"
+            result="blur"
+          />
+
+          <feMerge>
+
+            <feMergeNode
+              in="blur"
+            />
+
+            <feMergeNode
+              in="SourceGraphic"
+            />
+
+          </feMerge>
+
+        </filter>
+
+      </defs>
+
+      <path
+        d="
+          M90 12
+          C62 12 37 28 31 54
+          C26 76 38 91 39 112
+          C40 136 45 174 62 188
+          C69 194 78 190 82 176
+          L89 143
+          C90 137 94 137 96 143
+          L103 176
+          C106 190 116 194 123 188
+          C140 174 145 136 146 112
+          C147 91 159 76 154 54
+          C148 28 118 12 90 12Z
+        "
+        fill="url(#toothGradient)"
+        opacity=".25"
+        stroke="#5EF6FF"
+        strokeWidth="3"
+        filter="url(#toothGlow)"
+      />
+
+      <path
+        d="
+          M54 60
+          C61 43 76 35 90 35
+          C104 35 119 43 126 60
+        "
+        stroke="#EFFFFF"
+        strokeWidth="4"
+        strokeLinecap="round"
+        opacity=".9"
+      />
+
+      <path
+        d="
+          M55 77
+          C68 67 78 64 90 64
+          C102 64 112 67 125 77
+        "
+        stroke="#45EFFF"
+        strokeWidth="2"
+        opacity=".85"
+      />
+
+      <path
+        d="
+          M61 102
+          L75 118
+          L82 102
+          L90 124
+          L98 102
+          L105 118
+          L119 102
+        "
+        stroke="#00E8FF"
+        strokeWidth="2"
+        opacity=".85"
+      />
+
+      <path
+        d="
+          M72 132
+          L67 166
+          M108 132
+          L113 166
+        "
+        stroke="#27DFFF"
+        strokeWidth="3"
+        strokeLinecap="round"
+        opacity=".8"
+      />
+
+    </svg>
   );
 }

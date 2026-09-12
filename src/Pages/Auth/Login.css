@@ -1,0 +1,1027 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  background: #02070d;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+/* =========================================================
+   LOGIN PAGE
+========================================================= */
+
+.login-page {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+  color: #fff;
+
+  background:
+    radial-gradient(
+      circle at 75% 50%,
+      rgba(0, 111, 255, 0.1),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 92% 70%,
+      rgba(100, 30, 255, 0.1),
+      transparent 30%
+    ),
+    #02070d;
+}
+
+/* =========================================================
+   BACKGROUND
+========================================================= */
+
+.login-bg-glow {
+  position: absolute;
+  width: 450px;
+  height: 450px;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+}
+
+.login-bg-glow-one {
+  left: 45%;
+  top: 20%;
+  background: rgba(0, 180, 255, 0.08);
+}
+
+.login-bg-glow-two {
+  right: 5%;
+  bottom: 0;
+  background: rgba(91, 35, 255, 0.08);
+}
+
+.login-grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.1;
+  pointer-events: none;
+
+  background-image:
+    linear-gradient(
+      rgba(70, 200, 255, 0.06) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(70, 200, 255, 0.06) 1px,
+      transparent 1px
+    );
+
+  background-size: 70px 70px;
+}
+
+/* =========================================================
+   LEFT SIDE
+========================================================= */
+
+.login-left {
+  width: 48%;
+  min-height: 100vh;
+  padding: 42px 7%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  position: relative;
+  z-index: 10;
+}
+
+/* BRAND */
+
+.login-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 3px;
+}
+
+.brand-icon {
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(70, 215, 255, 0.45);
+  border-radius: 50%;
+
+  color: #7eeaff;
+
+  box-shadow:
+    0 0 15px rgba(40, 215, 255, 0.08),
+    inset 0 0 12px rgba(40, 215, 255, 0.04);
+}
+
+/* CONTENT */
+
+.login-content {
+  width: 100%;
+  max-width: 470px;
+  margin: auto 0;
+}
+
+.secure-label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  color: #27d8ff;
+
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
+
+  margin-bottom: 22px;
+}
+
+.secure-label span {
+  width: 27px;
+  height: 1px;
+  background: #27d8ff;
+
+  box-shadow:
+    0 0 8px rgba(39, 216, 255, 0.7);
+}
+
+/* TITLE */
+
+.login-content h1 {
+  margin: 0 0 26px;
+
+  font-size: clamp(48px, 5vw, 76px);
+  line-height: 0.95;
+
+  letter-spacing: -4px;
+  font-weight: 200;
+}
+
+.login-content h1 strong {
+  font-weight: 700;
+  color: #f2ffff;
+
+  text-shadow:
+    0 0 25px rgba(120, 240, 255, 0.08);
+}
+
+.login-description {
+  margin: 0 0 36px;
+
+  color: rgba(210, 226, 235, 0.55);
+
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.input-group {
+  margin-bottom: 18px;
+}
+
+.input-group label {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: rgba(224, 239, 241, 0.65);
+
+  font-size: 11px;
+}
+
+.input-box {
+  height: 56px;
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  gap: 13px;
+
+  padding: 0 17px;
+
+  border: 1px solid rgba(110, 190, 230, 0.16);
+
+  background: rgba(2, 13, 23, 0.65);
+
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+}
+
+.input-box:hover {
+  border-color: rgba(110, 210, 240, 0.25);
+}
+
+.input-box:focus-within {
+  border-color: rgba(35, 213, 255, 0.55);
+
+  background: rgba(3, 17, 28, 0.78);
+
+  box-shadow:
+    0 0 25px rgba(35, 180, 255, 0.08),
+    inset 0 0 15px rgba(35, 180, 255, 0.025);
+}
+
+.input-box > svg {
+  flex-shrink: 0;
+
+  color: rgba(155, 216, 240, 0.62);
+}
+
+.input-box input {
+  width: 100%;
+  height: 100%;
+
+  border: 0;
+  outline: 0;
+
+  background: transparent;
+
+  color: white;
+
+  font-size: 13px;
+}
+
+.input-box input::placeholder {
+  color: rgba(190, 215, 230, 0.3);
+}
+
+.eye-button {
+  border: 0;
+  background: transparent;
+
+  color: rgba(190, 224, 240, 0.48);
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0;
+
+  transition: 0.2s ease;
+}
+
+.eye-button:hover {
+  color: #42ddff;
+
+  filter:
+    drop-shadow(0 0 6px rgba(66, 221, 255, 0.5));
+}
+
+/* ERROR */
+
+.login-error {
+  padding: 11px 13px;
+
+  margin: 5px 0 15px;
+
+  border-left: 2px solid #ff6868;
+
+  background: rgba(255, 60, 60, 0.06);
+
+  color: #ff9b9b;
+
+  font-size: 12px;
+}
+
+/* =========================================================
+   SUBMIT BUTTON
+========================================================= */
+
+.login-submit {
+  width: 100%;
+  height: 57px;
+
+  margin-top: 8px;
+
+  border: 1px solid rgba(71, 232, 255, 0.8);
+  border-radius: 3px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #008fd0,
+      #09c3f2
+    );
+
+  color: white;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  letter-spacing: 5px;
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+}
+
+.login-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+
+  background:
+    linear-gradient(
+      90deg,
+      #00a8e8,
+      #16d3ff
+    );
+
+  box-shadow:
+    0 12px 35px rgba(0, 190, 255, 0.18),
+    0 0 20px rgba(0, 190, 255, 0.08);
+}
+
+.login-submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.login-submit:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* FOOTER */
+
+.login-footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  color: rgba(205, 225, 235, 0.22);
+
+  font-size: 9px;
+  letter-spacing: 1px;
+}
+
+/* =========================================================
+   RIGHT VISUAL
+========================================================= */
+
+.login-visual {
+  width: 52%;
+  min-height: 100vh;
+
+  position: relative;
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      ellipse at 55% 50%,
+      rgba(0, 105, 255, 0.18),
+      transparent 34%
+    ),
+    radial-gradient(
+      ellipse at 90% 65%,
+      rgba(108, 34, 255, 0.18),
+      transparent 35%
+    ),
+    linear-gradient(
+      110deg,
+      #020910,
+      #031324 48%,
+      #05091c
+    );
+
+  border-left: 1px solid rgba(100, 220, 255, 0.06);
+}
+
+/* =========================================================
+   VISUAL LIGHT
+========================================================= */
+
+.visual-light {
+  position: absolute;
+
+  width: 650px;
+  height: 650px;
+
+  right: -80px;
+  top: 20%;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(0, 190, 255, 0.13),
+      transparent 65%
+    );
+
+  filter: blur(35px);
+
+  pointer-events: none;
+}
+
+/* =========================================================
+   VISUAL TITLE
+========================================================= */
+
+.visual-title {
+  position: absolute;
+
+  top: 10%;
+  left: 7%;
+
+  z-index: 20;
+
+  display: flex;
+  gap: 18px;
+}
+
+.visual-number {
+  color: rgba(72, 218, 255, 0.5);
+
+  font-size: 9px;
+  letter-spacing: 2px;
+
+  margin-top: 10px;
+}
+
+.visual-title h2 {
+  margin: 0;
+
+  color: rgba(247, 253, 255, 0.95);
+
+  font-size: clamp(50px, 6vw, 88px);
+
+  line-height: 0.83;
+
+  letter-spacing: -5px;
+
+  font-weight: 200;
+}
+
+.visual-title h2 strong {
+  font-weight: 750;
+}
+
+.visual-title p {
+  margin: 18px 0 0;
+
+  color: #20d8ff;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 5px;
+}
+
+/* =========================================================
+   VISUAL LINES
+========================================================= */
+
+.visual-line {
+  position: absolute;
+
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(40, 200, 255, 0.35),
+      transparent
+    );
+}
+
+.visual-line-one {
+  width: 45%;
+  top: 31%;
+  right: -5%;
+}
+
+.visual-line-two {
+  width: 30%;
+  bottom: 22%;
+  left: 8%;
+}
+
+/* =========================================================
+   TOOTH SCENE
+========================================================= */
+
+.tooth-scene {
+  position: absolute;
+
+  /*
+    أصغر من الحجم القديم
+    ومناسب للـ screenshot
+  */
+  width: 500px;
+  height: 650px;
+
+  right: -35px;
+  top: 52%;
+
+  transform: translateY(-50%);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 10;
+}
+
+/* =========================================================
+   TOOTH GLOW
+========================================================= */
+
+.tooth-glow-blue,
+.tooth-glow-purple {
+  position: absolute;
+
+  border-radius: 50%;
+
+  filter: blur(50px);
+
+  pointer-events: none;
+}
+
+.tooth-glow-blue {
+  width: 330px;
+  height: 430px;
+
+  background: rgba(0, 190, 255, 0.16);
+}
+
+.tooth-glow-purple {
+  width: 300px;
+  height: 400px;
+
+  background: rgba(110, 45, 255, 0.10);
+}
+
+/* =========================================================
+   MAIN TOOTH
+========================================================= */
+
+.big-tooth {
+  /*
+    كان:
+    630px × 882px
+
+    أصبح:
+    350px × 490px
+  */
+
+  width: 350px;
+  height: 490px;
+
+  position: relative;
+
+  z-index: 10;
+
+  filter:
+    drop-shadow(0 0 5px rgba(255, 255, 255, 0.95))
+    drop-shadow(0 0 16px rgba(30, 200, 255, 0.75))
+    drop-shadow(0 0 35px rgba(40, 120, 255, 0.40));
+
+  animation:
+    toothFloat 6s ease-in-out infinite;
+
+  transform-origin: center center;
+}
+
+/* =========================================================
+   TOOTH FLOAT
+========================================================= */
+
+@keyframes toothFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* =========================================================
+   ORBITS
+========================================================= */
+
+.orbit {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  border: 1px solid rgba(30, 210, 255, 0.4);
+
+  border-radius: 50%;
+
+  z-index: 5;
+
+  pointer-events: none;
+
+  box-shadow:
+    0 0 12px rgba(30, 210, 255, 0.06);
+}
+
+.orbit-one {
+  width: 390px;
+  height: 115px;
+
+  transform:
+    translate(-50%, 155px)
+    rotate(-7deg);
+}
+
+.orbit-two {
+  width: 350px;
+  height: 90px;
+
+  transform:
+    translate(-50%, 160px)
+    rotate(9deg);
+
+  border-color: rgba(120, 70, 255, 0.28);
+}
+
+/* =========================================================
+   SPARKS
+========================================================= */
+
+.spark {
+  position: absolute;
+
+  width: 3px;
+  height: 3px;
+
+  border-radius: 50%;
+
+  background: #72eaff;
+
+  box-shadow:
+    0 0 8px #31d9ff,
+    0 0 16px rgba(31, 217, 255, 0.7);
+
+  z-index: 20;
+
+  animation:
+    spark 3s ease-in-out infinite;
+}
+
+.spark-one {
+  right: 75px;
+  top: 150px;
+}
+
+.spark-two {
+  right: 45px;
+  top: 310px;
+
+  animation-delay: 0.7s;
+}
+
+.spark-three {
+  left: 65px;
+  top: 270px;
+
+  animation-delay: 1.3s;
+}
+
+.spark-four {
+  right: 105px;
+  bottom: 100px;
+
+  animation-delay: 2s;
+}
+
+@keyframes spark {
+  0%,
+  100% {
+    opacity: 0.25;
+
+    transform:
+      translateY(0)
+      scale(0.7);
+  }
+
+  50% {
+    opacity: 1;
+
+    transform:
+      translateY(-14px)
+      scale(1.25);
+  }
+}
+
+/* =========================================================
+   VISUAL CAPTION
+========================================================= */
+
+.visual-caption {
+  position: absolute;
+
+  right: 7%;
+  bottom: 40px;
+
+  z-index: 20;
+
+  display: flex;
+  gap: 12px;
+
+  color: rgba(207, 236, 239, 0.28);
+
+  font-size: 8px;
+
+  letter-spacing: 3px;
+}
+
+/* =========================================================
+   EXTRA NEON EFFECTS
+========================================================= */
+
+.login-visual::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      circle at 50% 50%,
+      transparent 0%,
+      rgba(0, 0, 0, 0.05) 50%,
+      rgba(0, 0, 0, 0.32) 100%
+    );
+
+  z-index: 2;
+}
+
+/* =========================================================
+   RESPONSIVE — 1200
+========================================================= */
+
+@media (max-width: 1200px) {
+  .tooth-scene {
+    width: 430px;
+    height: 580px;
+
+    right: -45px;
+  }
+
+  .big-tooth {
+    width: 300px;
+    height: 420px;
+  }
+
+  .tooth-glow-blue {
+    width: 290px;
+    height: 380px;
+  }
+
+  .tooth-glow-purple {
+    width: 260px;
+    height: 350px;
+  }
+
+  .orbit-one {
+    width: 340px;
+    height: 100px;
+
+    transform:
+      translate(-50%, 140px)
+      rotate(-7deg);
+  }
+
+  .orbit-two {
+    width: 300px;
+    height: 80px;
+
+    transform:
+      translate(-50%, 145px)
+      rotate(9deg);
+  }
+
+  .login-left {
+    width: 50%;
+  }
+
+  .login-visual {
+    width: 50%;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE — 1000
+========================================================= */
+
+@media (max-width: 1000px) {
+  .tooth-scene {
+    width: 380px;
+    height: 540px;
+
+    right: -55px;
+  }
+
+  .big-tooth {
+    width: 270px;
+    height: 378px;
+  }
+
+  .tooth-glow-blue {
+    width: 260px;
+    height: 350px;
+  }
+
+  .tooth-glow-purple {
+    width: 230px;
+    height: 320px;
+  }
+
+  .orbit-one {
+    width: 300px;
+    height: 90px;
+
+    transform:
+      translate(-50%, 125px)
+      rotate(-7deg);
+  }
+
+  .orbit-two {
+    width: 270px;
+    height: 72px;
+
+    transform:
+      translate(-50%, 130px)
+      rotate(9deg);
+  }
+
+  .visual-title h2 {
+    font-size: 55px;
+  }
+
+  .visual-title p {
+    font-size: 8px;
+  }
+}
+
+/* =========================================================
+   MOBILE — 900
+========================================================= */
+
+@media (max-width: 900px) {
+  .login-page {
+    min-height: 100vh;
+  }
+
+  .login-visual {
+    display: none;
+  }
+
+  .login-left {
+    width: 100%;
+
+    padding:
+      30px
+      8%;
+  }
+
+  .login-content {
+    margin: 70px 0;
+
+    max-width: 520px;
+  }
+
+  .login-content h1 {
+    font-size: clamp(48px, 9vw, 70px);
+  }
+}
+
+/* =========================================================
+   MOBILE — 600
+========================================================= */
+
+@media (max-width: 600px) {
+  .login-left {
+    padding: 28px 24px;
+  }
+
+  .login-brand {
+    font-size: 10px;
+    letter-spacing: 2px;
+  }
+
+  .brand-icon {
+    width: 34px;
+    height: 34px;
+  }
+
+  .login-content {
+    margin: 55px 0;
+  }
+
+  .secure-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+
+    margin-bottom: 18px;
+  }
+
+  .login-content h1 {
+    font-size: 50px;
+
+    letter-spacing: -3px;
+
+    margin-bottom: 22px;
+  }
+
+  .login-description {
+    font-size: 13px;
+
+    margin-bottom: 28px;
+  }
+
+  .input-box {
+    height: 54px;
+
+    padding: 0 15px;
+  }
+
+  .login-submit {
+    height: 55px;
+
+    letter-spacing: 4px;
+  }
+
+  .login-description br {
+    display: none;
+  }
+}
+
+/* =========================================================
+   MOBILE — 500
+========================================================= */
+
+@media (max-width: 500px) {
+  .login-left {
+    padding: 25px;
+  }
+
+  .login-content h1 {
+    font-size: 46px;
+
+    letter-spacing: -2.5px;
+  }
+
+  .login-footer {
+    font-size: 8px;
+  }
+}
+
+/* =========================================================
+   VERY SMALL SCREENS
+========================================================= */
+
+@media (max-width: 360px) {
+  .login-left {
+    padding: 20px;
+  }
+
+  .login-content h1 {
+    font-size: 40px;
+  }
+
+  .login-submit {
+    font-size: 10px;
+    letter-spacing: 3px;
+  }
+}

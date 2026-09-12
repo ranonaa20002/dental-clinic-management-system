@@ -7,13 +7,13 @@ export default function SendEmailButton({ patientName, patientEmail, appointment
   const handleSendEmail = () => {
     setLoading(true);
 
-    // تجهيز عنوان الرسالة ونصها تلقائياً باللغة العربية
+    
     const subject = encodeURIComponent("تذكير بموعد زيارة عيادة الأسنان");
     const body = encodeURIComponent(
       `مرحباً ${patientName}،\n\nنود تذكيركم بموعدكم القادم في عيادة الأسنان:\n📅 التاريخ: ${appointmentDate}\n⏰ الوقت: ${appointmentTime}\n\nنتطلع لقاءكم.\nمع تحيات عيادة الأسنان.`
     );
 
-    // فتح تطبيق الإيميل وتعبئة البيانات تلقائياً
+
     window.location.href = `mailto:${patientEmail}?subject=${subject}&body=${body}`;
     
     setTimeout(() => {

@@ -1,21 +1,17 @@
 import { useState } from "react";
-import api from "../../services/Api";
 import { useNavigate } from "react-router-dom";
-
+import api from "../../services/api";
 import {
   Mail,
   Lock,
   Eye,
   EyeOff,
   ShieldCheck,
-  ArrowLeft,
-  Stethoscope,
-  Sparkles,
-  HeartPulse,
-  CheckCircle2,
+  ArrowRight,
 } from "lucide-react";
+import "./Login.css";
 
-export default function Login() {
+function Login() {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -23,13 +19,9 @@ export default function Login() {
     password: "",
   });
 
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
-  // =====================================================
-  // INPUT
-  // =====================================================
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,167 +34,80 @@ export default function Login() {
     setError("");
   };
 
-  // =====================================================
-  // LOGIN
-  // =====================================================
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    setError("");
-    setLoading(true);
+    if (!formData.identifier.trim()) {
+      setError("Please enter your email or username.");
+      return;
+    }
+
+    if (!formData.password) {
+      setError("Please enter your password.");
+      return;
+    }
 
     try {
-      // =================================================
-      // 1. LOGIN
-      // =================================================
+      setLoading(true);
+      setError("");
 
       const loginResponse = await api.post("/auth/local", {
         identifier: formData.identifier.trim(),
         password: formData.password,
       });
 
-      console.log("LOGIN RESPONSE:", loginResponse.data);
-
       const token = loginResponse?.data?.jwt;
 
       if (!token) {
-        throw new Error(
-          "لم يتم الحصول على Token من السيرفر."
-        );
+        throw new Error("Login token was not received.");
       }
 
-      // حفظ التوكن
       localStorage.setItem("token", token);
-
-      console.log("LOGIN SUCCESS");
-
-      // =================================================
-      // 2. GET CURRENT USER
-      // =================================================
 
       const userResponse = await api.get("/users/me", {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: "Bearer " + token,
         },
       });
 
       const user = userResponse?.data;
 
       if (!user) {
-        throw new Error(
-          "لم يتم العثور على بيانات المستخدم."
-        );
+        throw new Error("Could not load user information.");
       }
 
-      // =================================================
-      // DEBUG
-      // =================================================
-
-      console.log("========================================");
-      console.log("USER JSON:");
-      console.log(JSON.stringify(user, null, 2));
-
-      console.log(
-        "ACCOUNT TYPE:",
-        user?.AccountType
-      );
-
-      console.log(
-        "AGE:",
-        user?.age
-      );
-
-      console.log("USER ID:", user?.id);
-      console.log("USERNAME:", user?.username);
-      console.log("EMAIL:", user?.email);
-
-      console.log("========================================");
-
-      // =================================================
-      // 3. SAVE USER
-      // =================================================
-
-      localStorage.setItem(
-        "user",
-        JSON.stringify(user)
-      );
-
-      // تنظيف بيانات قديمة
-      localStorage.removeItem("patient");
-      localStorage.removeItem("accountType");
-
-      // =================================================
-      // 4. GET ACCOUNT TYPE
-      // =================================================
+      localStorage.setItem("user", JSON.stringify(user));
 
       const accountType = String(
         user?.AccountType || ""
-      )
-        .trim()
-        .toLowerCase();
+      ).toLowerCase();
 
-      console.log(
-        "DETECTED ACCOUNT TYPE:",
-        accountType
-      );
-
-      // =================================================
-      // 5. DOCTOR
-      // =================================================
+      localStorage.removeItem("patient");
+      localStorage.removeItem("accountType");
 
       if (accountType === "doctor") {
-        console.log("ACCOUNT TYPE: DOCTOR");
+        localStorage.setItem("accountType", "doctor");
 
-        localStorage.setItem(
-          "accountType",
-          "doctor"
-        );
-
-        navigate("/dashboard", {
-          replace: true,
-        });
+        navigate("/dashboard");
 
         return;
       }
 
-      // =================================================
-      // 6. PATIENT
-      // =================================================
-
       if (accountType === "patient") {
-        console.log("ACCOUNT TYPE: PATIENT");
-
         const patient = {
           id: user?.id ?? null,
-
-          documentId:
-            user?.documentId ?? null,
-
-          username:
-            user?.username ?? "",
-
+          documentId: user?.documentId ?? null,
+          username: user?.username ?? "",
           name:
             user?.name ||
             user?.fullName ||
             user?.username ||
-            "المريض",
-
-          email:
-            user?.email || "",
-
-          age:
-            Number(user?.age ?? 0),
-
+            "Patient",
+          email: user?.email || "",
+          age: Number(user?.age ?? 0),
           AccountType: "patient",
-
           accountType: "patient",
         };
-
-        console.log(
-          "PATIENT DATA:",
-          patient
-        );
 
         localStorage.setItem(
           "patient",
@@ -214,66 +119,24 @@ export default function Login() {
           "patient"
         );
 
-        navigate("/care", {
-          replace: true,
-        });
+        navigate("/care");
 
         return;
       }
 
-      // =================================================
-      // 7. UNKNOWN ACCOUNT
-      // =================================================
+      setError("Unknown account type.");
 
-      console.error(
-        "ACCOUNT TYPE NOT FOUND"
-      );
-
-      console.error(
-        "FULL USER:",
-        user
-      );
-
-      console.error(
-        "AccountType:",
-        user?.AccountType
-      );
-
-      setError(
-        `نوع الحساب غير معروف. قيمة AccountType الحالية: ${
-          user?.AccountType || "غير موجودة"
-        }`
-      );
-
-      // إزالة التوكن لو الحساب غير صحيح
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      localStorage.removeItem("patient");
-      localStorage.removeItem("accountType");
 
     } catch (err) {
-      console.log("========================================");
-      console.log("LOGIN ERROR:", err);
-      console.log(
-        "STATUS:",
-        err?.response?.status
-      );
-
-      console.log(
-        "SERVER DATA:",
-        JSON.stringify(
-          err?.response?.data,
-          null,
-          2
-        )
-      );
-
-      console.log("========================================");
+      console.error("Login error:", err);
 
       const message =
         err?.response?.data?.error?.message ||
+        err?.response?.data?.message ||
         err?.message ||
-        "فشل تسجيل الدخول.";
+        "Invalid email/username or password.";
 
       setError(message);
 
@@ -281,1071 +144,448 @@ export default function Login() {
       localStorage.removeItem("user");
       localStorage.removeItem("patient");
       localStorage.removeItem("accountType");
-
     } finally {
       setLoading(false);
     }
   };
 
-  // =====================================================
-  // UI
-  // =====================================================
-
   return (
-    <div
-      dir="rtl"
-      className="
-        min-h-screen
-        bg-[#f7fbfc]
-        overflow-hidden
-        relative
-      "
-    >
+    <div className="login-page">
+
       {/* BACKGROUND */}
+      <div className="login-bg-glow login-bg-glow-one" />
+      <div className="login-bg-glow login-bg-glow-two" />
+      <div className="login-grid" />
 
-      <div
-        className="
-          absolute
-          -top-40
-          -right-40
-          w-[600px]
-          h-[600px]
-          rounded-full
-          bg-sky-200/30
-          blur-[100px]
-          pointer-events-none
-        "
-      />
+      {/* LEFT */}
+      <section className="login-left">
 
-      <div
-        className="
-          absolute
-          -bottom-40
-          -left-40
-          w-[600px]
-          h-[600px]
-          rounded-full
-          bg-blue-200/20
-          blur-[100px]
-          pointer-events-none
-        "
-      />
-
-      {/* MAIN */}
-
-      <div
-        className="
-          relative
-          z-10
-          min-h-screen
-          grid
-          lg:grid-cols-2
-        "
-      >
-
-        {/* =================================================
-            DENTAL SIDE
-        ================================================= */}
-
-        <section
-          className="
-            relative
-            min-h-[570px]
-            lg:min-h-screen
-            overflow-hidden
-            flex
-            flex-col
-            justify-center
-            px-7
-            sm:px-12
-            lg:px-14
-            xl:px-24
-            py-16
-            bg-gradient-to-br
-            from-[#0F4C81]
-            via-[#1565C0]
-            to-[#0EA5E9]
-            text-white
-          "
-        >
-
-          {/* CIRCLES */}
-
-          <div
-            className="
-              absolute
-              -top-32
-              -right-32
-              w-[420px]
-              h-[420px]
-              rounded-full
-              border
-              border-white/10
-              pointer-events-none
-            "
-          />
-
-          <div
-            className="
-              absolute
-              -bottom-44
-              -left-44
-              w-[500px]
-              h-[500px]
-              rounded-full
-              border
-              border-white/10
-              pointer-events-none
-            "
-          />
-
-          <div
-            className="
-              absolute
-              top-24
-              left-20
-              w-24
-              h-24
-              rounded-full
-              bg-sky-300/10
-              blur-2xl
-              pointer-events-none
-            "
-          />
-
-          {/* LOGO */}
-
-          <div
-            className="
-              absolute
-              top-8
-              right-7
-              sm:right-10
-              lg:right-12
-              flex
-              items-center
-              gap-3
-            "
-          >
-
-            <div
-              className="
-                w-11
-                h-11
-                rounded-2xl
-                bg-white/10
-                border
-                border-white/15
-                backdrop-blur-md
-                flex
-                items-center
-                justify-center
-              "
-            >
-              <Stethoscope size={23} />
-            </div>
-
-            <div>
-              <div className="font-black text-lg">
-                DentalCare
-              </div>
-
-              <div
-                className="
-                  text-[10px]
-                  text-white/50
-                  tracking-widest
-                "
-              >
-                SMART DENTAL CLINIC
-              </div>
-            </div>
-
+        <div className="login-brand">
+          <div className="brand-icon">
+            <ShieldCheck size={22} />
           </div>
 
-          {/* CONTENT */}
+          <span>DENTAL CLINIC</span>
+        </div>
 
-          <div
-            className="
-              relative
-              z-10
-              max-w-xl
-            "
+        <div className="login-content">
+
+          <div className="secure-label">
+            <span />
+            SECURE ACCESS
+          </div>
+
+          <h1>
+            Welcome
+            <br />
+            <strong>Back.</strong>
+          </h1>
+
+          <p className="login-description">
+            Access your dental clinic management system
+            <br />
+            and continue your work securely.
+          </p>
+
+          <form
+            className="login-form"
+            onSubmit={handleSubmit}
           >
 
-            <div
-              className="
-                inline-flex
-                items-center
-                gap-2
-                px-4
-                py-2
-                rounded-full
-                bg-white/10
-                border
-                border-white/10
-                backdrop-blur-md
-                text-xs
-                font-bold
-                text-blue-50
-                mb-6
-              "
-            >
-              <Sparkles size={15} />
+            {/* EMAIL */}
+            <div className="input-group">
 
-              <span>
-                مستقبل رعاية الأسنان
-              </span>
-            </div>
+              <label>Email or Username</label>
 
-            <h1
-              className="
-                text-4xl
-                sm:text-5xl
-                xl:text-6xl
-                font-black
-                leading-[1.12]
-                tracking-tight
-              "
-            >
-              ابتسامتك...
+              <div className="input-box">
 
-              <br />
+                <Mail size={19} />
 
-              <span className="text-blue-100">
-                تستحق الأفضل.
-              </span>
-            </h1>
-
-            <p
-              className="
-                mt-5
-                max-w-md
-                text-sm
-                sm:text-base
-                leading-8
-                text-white/65
-              "
-            >
-              تجربة ذكية ومتكاملة لإدارة رعاية
-              الأسنان، تجمع بين التكنولوجيا
-              الحديثة والرعاية الطبية التي تستحقها.
-            </p>
-
-            {/* DENTAL VISUAL */}
-
-            <div
-              className="
-                relative
-                mt-7
-                sm:mt-9
-                h-[230px]
-                sm:h-[275px]
-                w-full
-              "
-            >
-
-              <div
-                className="
-                  absolute
-                  left-1/2
-                  top-1/2
-                  -translate-x-1/2
-                  -translate-y-1/2
-                  w-64
-                  h-64
-                  rounded-full
-                  bg-sky-300/20
-                  blur-[70px]
-                "
-              />
-
-              <svg
-                viewBox="0 0 600 260"
-                className="
-                  absolute
-                  inset-0
-                  w-full
-                  h-full
-                "
-                fill="none"
-              >
-                <path
-                  d="M 85 65 Q 300 245 515 65"
-                  stroke="rgba(255,255,255,0.12)"
-                  strokeWidth="2"
+                <input
+                  type="text"
+                  name="identifier"
+                  value={formData.identifier}
+                  onChange={handleChange}
+                  placeholder="Enter your email"
+                  autoComplete="username"
                 />
 
-                <path
-                  d="M 115 78 Q 300 220 485 78"
-                  stroke="rgba(191,219,254,0.6)"
-                  strokeWidth="3"
-                  strokeLinecap="round"
+              </div>
+            </div>
+
+            {/* PASSWORD */}
+            <div className="input-group">
+
+              <label>Password</label>
+
+              <div className="input-box">
+
+                <Lock size={19} />
+
+                <input
+                  type={
+                    showPassword
+                      ? "text"
+                      : "password"
+                  }
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Enter your password"
+                  autoComplete="current-password"
                 />
-              </svg>
 
-              {/* TEETH */}
-
-              <div
-                className="
-                  absolute
-                  left-1/2
-                  top-1/2
-                  -translate-x-1/2
-                  -translate-y-1/2
-                  flex
-                  items-end
-                  justify-center
-                  gap-1
-                "
-              >
-
-                <div
-                  className="
-                    relative
-                    w-10
-                    sm:w-12
-                    h-24
-                    sm:h-28
-                    rounded-t-[35px]
-                    rounded-b-[18px]
-                    bg-gradient-to-b
-                    from-white
-                    via-white
-                    to-blue-50
-                    border
-                    border-white/60
-                    shadow-[0_18px_35px_rgba(0,0,0,0.12)]
-                    -rotate-12
-                  "
+                <button
+                  type="button"
+                  className="eye-button"
+                  onClick={() =>
+                    setShowPassword(
+                      (value) => !value
+                    )
+                  }
                 >
-                  <div
-                    className="
-                      absolute
-                      top-3
-                      left-2
-                      w-2
-                      h-8
-                      rounded-full
-                      bg-white/80
-                      blur-[1px]
-                    "
-                  />
-                </div>
-
-                <div
-                  className="
-                    relative
-                    w-11
-                    sm:w-13
-                    h-28
-                    sm:h-32
-                    rounded-t-[38px]
-                    rounded-b-[18px]
-                    bg-gradient-to-b
-                    from-white
-                    via-white
-                    to-blue-50
-                    border
-                    border-white/60
-                    shadow-[0_18px_35px_rgba(0,0,0,0.12)]
-                    -rotate-6
-                  "
-                >
-                  <div
-                    className="
-                      absolute
-                      top-3
-                      left-2
-                      w-2
-                      h-9
-                      rounded-full
-                      bg-white/80
-                    "
-                  />
-                </div>
-
-                <div
-                  className="
-                    relative
-                    w-12
-                    sm:w-14
-                    h-32
-                    sm:h-36
-                    rounded-t-[42px]
-                    rounded-b-[20px]
-                    bg-gradient-to-b
-                    from-white
-                    via-white
-                    to-blue-50
-                    border
-                    border-white/70
-                    shadow-[0_20px_45px_rgba(0,0,0,0.15)]
-                    z-10
-                  "
-                >
-                  <div
-                    className="
-                      absolute
-                      top-3
-                      left-3
-                      w-2
-                      h-10
-                      rounded-full
-                      bg-blue-50
-                    "
-                  />
-
-                  <div
-                    className="
-                      absolute
-                      bottom-3
-                      left-1/2
-                      -translate-x-1/2
-                      w-5
-                      h-1
-                      rounded-full
-                      bg-blue-100
-                    "
-                  />
-                </div>
-
-                <div
-                  className="
-                    relative
-                    w-11
-                    sm:w-13
-                    h-28
-                    sm:h-32
-                    rounded-t-[38px]
-                    rounded-b-[18px]
-                    bg-gradient-to-b
-                    from-white
-                    via-white
-                    to-blue-50
-                    border
-                    border-white/60
-                    shadow-[0_18px_35px_rgba(0,0,0,0.12)]
-                    rotate-6
-                  "
-                >
-                  <div
-                    className="
-                      absolute
-                      top-3
-                      left-2
-                      w-2
-                      h-9
-                      rounded-full
-                      bg-white/80
-                    "
-                  />
-                </div>
-
-                <div
-                  className="
-                    relative
-                    w-10
-                    sm:w-12
-                    h-24
-                    sm:h-28
-                    rounded-t-[35px]
-                    rounded-b-[18px]
-                    bg-gradient-to-b
-                    from-white
-                    via-white
-                    to-blue-50
-                    border
-                    border-white/60
-                    shadow-[0_18px_35px_rgba(0,0,0,0.12)]
-                    rotate-12
-                  "
-                >
-                  <div
-                    className="
-                      absolute
-                      top-3
-                      left-2
-                      w-2
-                      h-8
-                      rounded-full
-                      bg-white/80
-                    "
-                  />
-                </div>
+                  {showPassword ? (
+                    <EyeOff size={18} />
+                  ) : (
+                    <Eye size={18} />
+                  )}
+                </button>
 
               </div>
-
-              {/* HEART */}
-
-              <div
-                className="
-                  absolute
-                  top-3
-                  right-[8%]
-                  w-12
-                  h-12
-                  rounded-2xl
-                  bg-white/10
-                  border
-                  border-white/10
-                  backdrop-blur-md
-                  flex
-                  items-center
-                  justify-center
-                  rotate-12
-                  shadow-xl
-                "
-              >
-                <HeartPulse size={20} />
-              </div>
-
-              {/* SHIELD */}
-
-              <div
-                className="
-                  absolute
-                  bottom-2
-                  left-[8%]
-                  w-12
-                  h-12
-                  rounded-2xl
-                  bg-white/10
-                  border
-                  border-white/10
-                  backdrop-blur-md
-                  flex
-                  items-center
-                  justify-center
-                  -rotate-12
-                  shadow-xl
-                "
-              >
-                <ShieldCheck size={20} />
-              </div>
-
-            </div>
-
-            {/* FEATURES */}
-
-            <div
-              className="
-                flex
-                flex-wrap
-                gap-3
-                mt-1
-              "
-            >
-
-              {[
-                "إدارة المرضى",
-                "المواعيد",
-                "رعاية متكاملة",
-              ].map((item) => (
-                <div
-                  key={item}
-                  className="
-                    flex
-                    items-center
-                    gap-2
-                    px-3
-                    py-2
-                    rounded-xl
-                    bg-white/10
-                    border
-                    border-white/10
-                    text-xs
-                    text-white/70
-                  "
-                >
-                  <CheckCircle2
-                    size={15}
-                    className="text-blue-100"
-                  />
-
-                  {item}
-                </div>
-              ))}
-
-            </div>
-
-          </div>
-
-          <div
-            className="
-              absolute
-              bottom-6
-              right-8
-              lg:right-12
-              text-[9px]
-              text-white/25
-              tracking-[0.3em]
-            "
-          >
-            DENTAL • CARE • TECHNOLOGY
-          </div>
-
-        </section>
-
-        {/* =================================================
-            LOGIN SIDE
-        ================================================= */}
-
-        <section
-          className="
-            min-h-screen
-            bg-[#f8fbfc]
-            flex
-            items-center
-            justify-center
-            px-6
-            sm:px-10
-            lg:px-14
-            xl:px-24
-            py-12
-          "
-        >
-
-          <div className="w-full max-w-md">
-
-            {/* MOBILE LOGO */}
-
-            <div
-              className="
-                lg:hidden
-                flex
-                justify-center
-                mb-8
-              "
-            >
-              <div
-                className="
-                  w-16
-                  h-16
-                  rounded-2xl
-                  bg-gradient-to-br
-                  from-[#1565C0]
-                  to-[#0F4C81]
-                  flex
-                  items-center
-                  justify-center
-                  text-white
-                  shadow-xl
-                  shadow-blue-200
-                "
-              >
-                <Stethoscope size={30} />
-              </div>
-            </div>
-
-            {/* HEADER */}
-
-            <div className="mb-8">
-
-              <div
-                className="
-                  inline-flex
-                  items-center
-                  gap-2
-                  px-3
-                  py-1.5
-                  rounded-full
-                  bg-blue-50
-                  border
-                  border-blue-100
-                  text-[#1565C0]
-                  text-xs
-                  font-bold
-                  mb-5
-                "
-              >
-                <Sparkles size={14} />
-                مرحبًا بعودتك
-              </div>
-
-              <h2
-                className="
-                  text-3xl
-                  sm:text-4xl
-                  font-black
-                  text-slate-900
-                  tracking-tight
-                "
-              >
-                تسجيل الدخول
-              </h2>
-
-              <p
-                className="
-                  mt-3
-                  text-sm
-                  text-slate-400
-                  leading-7
-                "
-              >
-                ادخل بيانات حسابك للوصول إلى
-                لوحة التحكم الخاصة بك.
-              </p>
-
             </div>
 
             {/* ERROR */}
-
             {error && (
-              <div
-                className="
-                  mb-6
-                  p-4
-                  rounded-2xl
-                  bg-red-50
-                  border
-                  border-red-100
-                  text-red-600
-                  text-sm
-                  leading-6
-                "
-              >
+              <div className="login-error">
                 {error}
               </div>
             )}
 
-            {/* FORM */}
-
-            <form
-              onSubmit={handleSubmit}
-              className="space-y-5"
+            {/* SUBMIT */}
+            <button
+              type="submit"
+              className="login-submit"
+              disabled={loading}
             >
+              <span>
+                {loading
+                  ? "SIGNING IN..."
+                  : "SIGN IN"}
+              </span>
 
-              {/* EMAIL */}
+              {!loading && (
+                <ArrowRight size={20} />
+              )}
+            </button>
 
-              <div>
+          </form>
+        </div>
 
-                <label
-                  className="
-                    block
-                    mb-2.5
-                    text-sm
-                    font-bold
-                    text-slate-700
-                  "
-                >
-                  البريد الإلكتروني
-                </label>
+        <div className="login-footer">
+          <span>© 2026 Dental Clinic</span>
+          <span>•</span>
+          <span>Secure Healthcare System</span>
+        </div>
 
-                <div className="relative">
+      </section>
 
-                  <Mail
-                    size={19}
-                    className="
-                      absolute
-                      right-4
-                      top-1/2
-                      -translate-y-1/2
-                      text-slate-400
-                      pointer-events-none
-                    "
-                  />
+      {/* RIGHT VISUAL */}
+      <section className="login-visual">
 
-                  <input
-                    type="email"
-                    name="identifier"
-                    value={formData.identifier}
-                    onChange={handleChange}
-                    placeholder="example@email.com"
-                    autoComplete="email"
-                    required
-                    className="
-                      w-full
-                      h-14
-                      pr-12
-                      pl-4
-                      rounded-2xl
-                      border
-                      border-slate-200
-                      bg-white
-                      text-slate-800
-                      placeholder:text-slate-300
-                      outline-none
-                      transition-all
-                      duration-200
-                      focus:border-[#1565C0]
-                      focus:ring-4
-                      focus:ring-blue-100
-                    "
-                  />
+        <div className="visual-light" />
 
-                </div>
+        <div className="visual-title">
 
-              </div>
+          <span className="visual-number">
+            01
+          </span>
 
-              {/* PASSWORD */}
+          <div>
+            <h2>
+              DENTAL
+              <br />
+              <strong>CLINIC</strong>
+            </h2>
 
-              <div>
-
-                <div
-                  className="
-                    flex
-                    items-center
-                    justify-between
-                    mb-2.5
-                  "
-                >
-
-                  <label
-                    className="
-                      text-sm
-                      font-bold
-                      text-slate-700
-                    "
-                  >
-                    كلمة المرور
-                  </label>
-
-                  <button
-                    type="button"
-                    className="
-                      text-xs
-                      font-bold
-                      text-[#1565C0]
-                      hover:text-[#0F4C81]
-                      transition
-                    "
-                  >
-                    نسيت كلمة المرور؟
-                  </button>
-
-                </div>
-
-                <div className="relative">
-
-                  <Lock
-                    size={19}
-                    className="
-                      absolute
-                      right-4
-                      top-1/2
-                      -translate-y-1/2
-                      text-slate-400
-                      pointer-events-none
-                    "
-                  />
-
-                  <input
-                    type={
-                      showPassword
-                        ? "text"
-                        : "password"
-                    }
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    placeholder="••••••••"
-                    autoComplete="current-password"
-                    required
-                    className="
-                      w-full
-                      h-14
-                      pr-12
-                      pl-12
-                      rounded-2xl
-                      border
-                      border-slate-200
-                      bg-white
-                      text-slate-800
-                      placeholder:text-slate-300
-                      outline-none
-                      transition-all
-                      duration-200
-                      focus:border-[#1565C0]
-                      focus:ring-4
-                      focus:ring-blue-100
-                    "
-                  />
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setShowPassword(
-                        (prev) => !prev
-                      )
-                    }
-                    className="
-                      absolute
-                      left-4
-                      top-1/2
-                      -translate-y-1/2
-                      text-slate-400
-                      hover:text-[#1565C0]
-                      transition
-                    "
-                  >
-                    {showPassword ? (
-                      <EyeOff size={19} />
-                    ) : (
-                      <Eye size={19} />
-                    )}
-                  </button>
-
-                </div>
-
-              </div>
-
-              {/* SECURITY */}
-
-              <div
-                className="
-                  flex
-                  items-center
-                  gap-2
-                  text-xs
-                  text-slate-400
-                  py-1
-                "
-              >
-                <ShieldCheck
-                  size={16}
-                  className="text-emerald-500"
-                />
-
-                <span>
-                  بياناتك محمية بتسجيل دخول آمن
-                </span>
-              </div>
-
-              {/* LOGIN */}
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="
-                  group
-                  relative
-                  w-full
-                  h-14
-                  rounded-2xl
-                  overflow-hidden
-                  bg-gradient-to-r
-                  from-[#0F4C81]
-                  via-[#1565C0]
-                  to-[#0EA5E9]
-                  text-white
-                  font-black
-                  shadow-lg
-                  shadow-blue-200/50
-                  hover:shadow-xl
-                  hover:shadow-blue-200/60
-                  hover:-translate-y-0.5
-                  active:translate-y-0
-                  disabled:opacity-60
-                  disabled:cursor-not-allowed
-                  transition-all
-                  duration-200
-                "
-              >
-
-                <span
-                  className="
-                    absolute
-                    inset-0
-                    bg-gradient-to-r
-                    from-transparent
-                    via-white/10
-                    to-transparent
-                    -translate-x-full
-                    group-hover:translate-x-full
-                    transition-transform
-                    duration-700
-                  "
-                />
-
-                <span
-                  className="
-                    relative
-                    z-10
-                    flex
-                    items-center
-                    justify-center
-                    gap-2
-                  "
-                >
-
-                  {loading ? (
-                    <>
-                      <span
-                        className="
-                          w-5
-                          h-5
-                          border-2
-                          border-white/40
-                          border-t-white
-                          rounded-full
-                          animate-spin
-                        "
-                      />
-
-                      جاري تسجيل الدخول...
-                    </>
-                  ) : (
-                    <>
-                      تسجيل الدخول
-
-                      <ArrowLeft
-                        size={19}
-                        className="
-                          transition-transform
-                          group-hover:-translate-x-1
-                        "
-                      />
-                    </>
-                  )}
-
-                </span>
-
-              </button>
-
-            </form>
-
-            {/* FOOTER */}
-
-            <div
-              className="
-                mt-8
-                pt-6
-                border-t
-                border-slate-200/70
-                text-center
-              "
-            >
-
-              <p
-                className="
-                  text-xs
-                  text-slate-400
-                  leading-6
-                "
-              >
-                باستخدامك للمنصة، أنت توافق على
-
-                <span
-                  className="
-                    mx-1
-                    text-[#1565C0]
-                    font-bold
-                  "
-                >
-                  سياسة الخصوصية
-                </span>
-
-                وشروط الاستخدام.
-              </p>
-
-            </div>
-
+            <p>
+              MANAGEMENT SYSTEM
+            </p>
           </div>
 
-        </section>
+        </div>
 
-      </div>
+        {/* DECORATION */}
+        <div className="visual-line visual-line-one" />
+        <div className="visual-line visual-line-two" />
+
+        {/* TOOTH */}
+        <div className="tooth-scene">
+
+          <div className="tooth-glow-blue" />
+          <div className="tooth-glow-purple" />
+
+          <div className="orbit orbit-one" />
+          <div className="orbit orbit-two" />
+
+          <span className="spark spark-one" />
+          <span className="spark spark-two" />
+          <span className="spark spark-three" />
+          <span className="spark spark-four" />
+
+          <svg
+            className="big-tooth"
+            viewBox="0 0 500 700"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <defs>
+
+              <linearGradient
+                id="toothGradient"
+                x1="0"
+                y1="0"
+                x2="1"
+                y2="0"
+              >
+                <stop
+                  offset="0%"
+                  stopColor="#ffffff"
+                />
+
+                <stop
+                  offset="20%"
+                  stopColor="#d9f5ff"
+                />
+
+                <stop
+                  offset="45%"
+                  stopColor="#9eb8ca"
+                />
+
+                <stop
+                  offset="62%"
+                  stopColor="#e1f5ff"
+                />
+
+                <stop
+                  offset="85%"
+                  stopColor="#ffffff"
+                />
+
+                <stop
+                  offset="100%"
+                  stopColor="#b9d9eb"
+                />
+              </linearGradient>
+
+              <linearGradient
+                id="toothInside"
+                x1="0"
+                y1="0"
+                x2="0"
+                y2="1"
+              >
+                <stop
+                  offset="0%"
+                  stopColor="#ffffff"
+                  stopOpacity=".8"
+                />
+
+                <stop
+                  offset="50%"
+                  stopColor="#91aec3"
+                  stopOpacity=".5"
+                />
+
+                <stop
+                  offset="100%"
+                  stopColor="#496c87"
+                  stopOpacity=".2"
+                />
+              </linearGradient>
+
+              <filter id="blur">
+                <feGaussianBlur
+                  stdDeviation="7"
+                />
+              </filter>
+
+            </defs>
+
+            {/* MAIN TOOTH */}
+            <path
+              d="
+                M108 245
+                C91 218 78 181 84 143
+                C91 94 125 55 174 47
+                C204 42 229 54 250 76
+                C271 54 296 42 326 47
+                C375 55 409 94 416 143
+                C422 181 409 218 392 245
+                C376 270 365 291 363 320
+                C361 351 369 382 360 411
+                C352 437 335 452 320 470
+                C304 490 301 523 299 557
+                C296 602 286 645 264 679
+                C258 689 248 689 243 678
+                C226 645 217 603 214 558
+                C212 523 209 491 193 470
+                C178 452 161 437 153 411
+                C144 382 152 351 150 320
+                C148 291 137 270 108 245
+                Z
+              "
+              fill="url(#toothGradient)"
+              stroke="#f4ffff"
+              strokeWidth="3"
+            />
+
+            {/* INNER */}
+            <path
+              d="
+                M250 78
+                C270 55 295 44 326 48
+                C375 57 408 95 415 144
+                C420 180 408 218 391 244
+                C375 270 363 291 362 320
+                C360 351 368 382 359 410
+                C350 437 334 452 319 470
+                C304 491 300 524 298 557
+                C295 601 286 642 264 678
+                C258 688 250 688 245 677
+                C235 654 228 626 224 596
+                C220 559 220 521 217 488
+                C214 448 223 410 231 373
+                C241 329 241 284 235 241
+                C229 196 235 118 250 78
+                Z
+              "
+              fill="url(#toothInside)"
+              opacity=".55"
+            />
+
+            {/* CENTER */}
+            <path
+              d="
+                M250 355
+                C225 389 211 425 214 466
+                C216 500 227 530 232 562
+                C236 592 239 625 247 661
+              "
+              fill="none"
+              stroke="#6e98b5"
+              strokeWidth="8"
+              opacity=".35"
+            />
+
+            <path
+              d="
+                M250 355
+                C275 389 289 425 286 466
+                C284 500 273 530 268 562
+                C264 592 261 625 253 661
+              "
+              fill="none"
+              stroke="#ffffff"
+              strokeWidth="6"
+              opacity=".3"
+            />
+
+            {/* ANATOMICAL LINES */}
+            <path
+              d="
+                M119 145
+                C151 111 203 105 250 132
+                C297 105 349 111 381 145
+              "
+              fill="none"
+              stroke="#ffffff"
+              strokeWidth="5"
+              strokeLinecap="round"
+              opacity=".28"
+            />
+
+            <path
+              d="
+                M111 190
+                C150 159 201 163 250 191
+                C299 163 350 159 389 190
+              "
+              fill="none"
+              stroke="#ffffff"
+              strokeWidth="4"
+              strokeLinecap="round"
+              opacity=".22"
+            />
+
+            {/* SHINE */}
+            <path
+              d="
+                M143 88
+                C111 120 105 171 119 209
+                C128 235 143 250 149 280
+              "
+              fill="none"
+              stroke="#ffffff"
+              strokeWidth="18"
+              strokeLinecap="round"
+              opacity=".35"
+              filter="url(#blur)"
+            />
+
+            <path
+              d="
+                M156 78
+                C137 103 130 132 131 163
+              "
+              fill="none"
+              stroke="#ffffff"
+              strokeWidth="8"
+              strokeLinecap="round"
+              opacity=".65"
+            />
+
+            {/* BLUE EDGE */}
+            <path
+              d="
+                M101 142
+                C88 183 101 222 124 251
+              "
+              fill="none"
+              stroke="#36dcff"
+              strokeWidth="9"
+              strokeLinecap="round"
+              opacity=".8"
+              filter="url(#blur)"
+            />
+
+            {/* PURPLE EDGE */}
+            <path
+              d="
+                M399 142
+                C412 183 399 222 376 251
+              "
+              fill="none"
+              stroke="#9a65ff"
+              strokeWidth="9"
+              strokeLinecap="round"
+              opacity=".8"
+              filter="url(#blur)"
+            />
+
+          </svg>
+        </div>
+
+        <div className="visual-caption">
+          PRECISION
+          <span>•</span>
+          CARE
+          <span>•</span>
+          TECHNOLOGY
+        </div>
+
+      </section>
     </div>
   );
 }
+
+export default Login;

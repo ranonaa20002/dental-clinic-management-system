@@ -2,12 +2,10 @@ import ChildPatientDashboard from "./ChildPatientDashboard";
 import AdultPatientDashboard from "./AdultPatientDashboard";
 
 export default function PatientDashboard() {
-  // مؤقتًا بنجيب بيانات المريض من localStorage
   const patient = JSON.parse(
     localStorage.getItem("patient")
   );
 
-  // لو مفيش بيانات
   if (!patient) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
@@ -26,11 +24,9 @@ export default function PatientDashboard() {
 
   const age = Number(patient.age);
 
-  // طفل أقل من 18 سنة
   if (age < 18) {
     return <ChildPatientDashboard patient={patient} />;
   }
 
-  // بالغ
   return <AdultPatientDashboard patient={patient} />;
 }
