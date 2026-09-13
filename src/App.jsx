@@ -12,7 +12,6 @@ import AIAssistant from "./Pages/AIAssistant/AIAssistant";
 import DentalClinicalHub from "./Pages/DentalClinicalHub";
 import Reports from "./Pages/Reports/Reports";
 import Prescription from "./Pages/Prescription/Prescription";
-
 import Login from "./Pages/Auth/Login";
 import Register from "./Pages/Auth/Register";
 
