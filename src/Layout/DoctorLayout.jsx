@@ -12,8 +12,6 @@ import {
   Bell,
   Search,
   Mail,
-  CheckCircle2,
-  Clock,
   X,
   Activity,
   CreditCard,
@@ -21,9 +19,8 @@ import {
   BarChart3,
   Stethoscope,
   ChevronRight,
-  Sparkles,
-  Menu,
   ChevronDown,
+  Menu,
 } from "lucide-react";
 
 export default function DoctorLayout() {
@@ -36,7 +33,27 @@ export default function DoctorLayout() {
   const [isNotificationsOpen, setIsNotificationsOpen] =
     useState(false);
 
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  // Sidebar مفتوح على الكمبيوتر ومقفول على الموبايل
+  const [sidebarOpen, setSidebarOpen] = useState(
+    () => window.innerWidth >= 768
+  );
+
+  // إغلاق الـ Sidebar تلقائياً عند تصغير الشاشة
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setSidebarOpen(false);
+      } else {
+        setSidebarOpen(true);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const sentEmails = [
     {
@@ -67,6 +84,7 @@ export default function DoctorLayout() {
 
   useEffect(() => {
     document.documentElement.lang = language;
+
     document.documentElement.dir =
       language === "ar" ? "rtl" : "ltr";
 
@@ -76,23 +94,34 @@ export default function DoctorLayout() {
   }, [language]);
 
   const toggleLanguage = () => {
-    setLanguage((prev) => (prev === "ar" ? "en" : "ar"));
+    setLanguage((prev) =>
+      prev === "ar" ? "en" : "ar"
+    );
   };
 
   const navItems = [
     {
-      name: language === "ar" ? "الرئيسية" : "Dashboard",
+      name:
+        language === "ar"
+          ? "الرئيسية"
+          : "Dashboard",
       path: "/dashboard",
       end: true,
       icon: LayoutDashboard,
     },
     {
-      name: language === "ar" ? "المرضى" : "Patients",
+      name:
+        language === "ar"
+          ? "المرضى"
+          : "Patients",
       path: "/dashboard/patients",
       icon: Users,
     },
     {
-      name: language === "ar" ? "المواعيد" : "Appointments",
+      name:
+        language === "ar"
+          ? "المواعيد"
+          : "Appointments",
       path: "/dashboard/appointments",
       icon: Calendar,
     },
@@ -105,17 +134,26 @@ export default function DoctorLayout() {
       icon: FileText,
     },
     {
-      name: language === "ar" ? "المدفوعات" : "Payments",
+      name:
+        language === "ar"
+          ? "المدفوعات"
+          : "Payments",
       path: "/dashboard/payments",
       icon: CreditCard,
     },
     {
-      name: language === "ar" ? "الروشتات" : "Prescriptions",
+      name:
+        language === "ar"
+          ? "الروشتات"
+          : "Prescriptions",
       path: "/dashboard/prescription",
       icon: Pill,
     },
     {
-      name: language === "ar" ? "التقارير" : "Reports",
+      name:
+        language === "ar"
+          ? "التقارير"
+          : "Reports",
       path: "/dashboard/reports",
       icon: BarChart3,
     },
@@ -136,7 +174,10 @@ export default function DoctorLayout() {
       icon: Bot,
     },
     {
-      name: language === "ar" ? "الإعدادات" : "Settings",
+      name:
+        language === "ar"
+          ? "الإعدادات"
+          : "Settings",
       path: "/dashboard/settings",
       icon: Settings,
     },
@@ -153,19 +194,46 @@ export default function DoctorLayout() {
 
     return (
       currentPage?.name ||
-      (language === "ar" ? "لوحة التحكم" : "Dashboard")
+      (language === "ar"
+        ? "لوحة التحكم"
+        : "Dashboard")
     );
   };
 
   return (
     <div
       dir={language === "ar" ? "rtl" : "ltr"}
-      className="min-h-screen h-screen overflow-hidden text-white font-sans"
+      className="
+        min-h-screen
+        h-screen
+        overflow-hidden
+        text-white
+        font-sans
+      "
       style={{
         background:
           "radial-gradient(circle at 72% 12%, rgba(0,145,255,.055), transparent 25%), radial-gradient(circle at 30% 80%, rgba(0,220,255,.025), transparent 28%), #000813",
       }}
     >
+      {/* =====================================================
+          MOBILE OVERLAY
+      ===================================================== */}
+
+      {sidebarOpen && (
+        <button
+          aria-label="Close sidebar"
+          onClick={() => setSidebarOpen(false)}
+          className="
+            fixed
+            inset-0
+            bg-black/60
+            backdrop-blur-[2px]
+            z-40
+            md:hidden
+          "
+        />
+      )}
+
       {/* =====================================================
           SIDEBAR
       ===================================================== */}
@@ -174,7 +242,11 @@ export default function DoctorLayout() {
         className={`
           fixed
           top-0
-          ${language === "ar" ? "right-0" : "left-0"}
+          ${
+            language === "ar"
+              ? "right-0"
+              : "left-0"
+          }
           h-screen
           z-50
           flex
@@ -184,15 +256,31 @@ export default function DoctorLayout() {
           overflow-hidden
           border-white/[0.055]
           bg-[#010C18]
+
           ${
             language === "ar"
               ? "border-l"
               : "border-r"
           }
-          ${sidebarOpen ? "w-[220px]" : "w-[70px]"}
+
+          ${
+            sidebarOpen
+              ? "w-[220px]"
+              : "w-[70px]"
+          }
+
+          ${
+            sidebarOpen
+              ? "translate-x-0"
+              : language === "ar"
+              ? "translate-x-full md:translate-x-0"
+              : "-translate-x-full md:translate-x-0"
+          }
         `}
       >
-        {/* LOGO */}
+        {/* =====================================================
+            LOGO
+        ===================================================== */}
 
         <div
           className={`
@@ -244,24 +332,43 @@ export default function DoctorLayout() {
 
           {sidebarOpen && (
             <div>
-              <div className="text-[11px] font-bold tracking-[0.12em] text-white">
+              <div
+                className="
+                  text-[11px]
+                  font-bold
+                  tracking-[0.12em]
+                  text-white
+                "
+              >
                 DENTAL
               </div>
 
-              <div className="text-[7px] tracking-[0.22em] text-cyan-300/45">
+              <div
+                className="
+                  text-[7px]
+                  tracking-[0.22em]
+                  text-cyan-300/45
+                "
+              >
                 CLINIC
               </div>
             </div>
           )}
         </div>
 
-        {/* MENU */}
+        {/* =====================================================
+            MENU
+        ===================================================== */}
 
         <div
           className={`
             px-2
             pt-5
-            ${sidebarOpen ? "" : "px-1"}
+            ${
+              sidebarOpen
+                ? ""
+                : "px-1"
+            }
           `}
         >
           {sidebarOpen && (
@@ -288,20 +395,29 @@ export default function DoctorLayout() {
                   key={item.path}
                   to={item.path}
                   end={item.end}
+                  onClick={() => {
+                    // على الموبايل اقفل الـSidebar بعد اختيار الصفحة
+                    if (window.innerWidth < 768) {
+                      setSidebarOpen(false);
+                    }
+                  }}
                   className={({ isActive }) => `
                     group
                     relative
                     flex
                     items-center
+
                     ${
                       sidebarOpen
                         ? "gap-3 px-3"
                         : "justify-center px-1"
                     }
+
                     h-[35px]
                     rounded-lg
                     transition-all
                     duration-200
+
                     ${
                       isActive
                         ? `
@@ -346,7 +462,14 @@ export default function DoctorLayout() {
 
                       {sidebarOpen && (
                         <>
-                          <span className="text-[10px] font-medium flex-1 truncate">
+                          <span
+                            className="
+                              text-[10px]
+                              font-medium
+                              flex-1
+                              truncate
+                            "
+                          >
                             {item.name}
                           </span>
 
@@ -366,7 +489,9 @@ export default function DoctorLayout() {
           </nav>
         </div>
 
-        {/* DOCTOR */}
+        {/* =====================================================
+            DOCTOR
+        ===================================================== */}
 
         <div className="mt-auto p-2">
           <div
@@ -375,6 +500,7 @@ export default function DoctorLayout() {
               bg-[#03131F]
               border
               border-white/[0.05]
+
               ${
                 sidebarOpen
                   ? "p-3"
@@ -386,6 +512,7 @@ export default function DoctorLayout() {
               className={`
                 flex
                 items-center
+
                 ${
                   sidebarOpen
                     ? "gap-2.5"
@@ -430,11 +557,25 @@ export default function DoctorLayout() {
 
               {sidebarOpen && (
                 <div className="min-w-0">
-                  <p className="text-[9px] font-semibold text-white/80 truncate">
+                  <p
+                    className="
+                      text-[9px]
+                      font-semibold
+                      text-white/80
+                      truncate
+                    "
+                  >
                     Dr. Ahmed
                   </p>
 
-                  <p className="text-[7px] text-white/25 mt-0.5 truncate">
+                  <p
+                    className="
+                      text-[7px]
+                      text-white/25
+                      mt-0.5
+                      truncate
+                    "
+                  >
                     Dental Consultant
                   </p>
                 </div>
@@ -443,7 +584,15 @@ export default function DoctorLayout() {
           </div>
 
           {sidebarOpen && (
-            <p className="text-[6px] text-center text-white/15 mt-2 tracking-[0.12em]">
+            <p
+              className="
+                text-[6px]
+                text-center
+                text-white/15
+                mt-2
+                tracking-[0.12em]
+              "
+            >
               DENTAL CLINIC SYSTEM • v2.0.4
             </p>
           )}
@@ -461,14 +610,16 @@ export default function DoctorLayout() {
           flex-col
           transition-all
           duration-300
+          min-w-0
+
           ${
             language === "ar"
               ? sidebarOpen
-                ? "mr-[220px]"
-                : "mr-[70px]"
+                ? "md:mr-[220px]"
+                : "md:mr-[70px]"
               : sidebarOpen
-              ? "ml-[220px]"
-              : "ml-[70px]"
+              ? "md:ml-[220px]"
+              : "md:ml-[70px]"
           }
         `}
       >
@@ -483,7 +634,8 @@ export default function DoctorLayout() {
             flex
             items-center
             justify-between
-            px-4
+            px-3
+            sm:px-4
             lg:px-5
             bg-[#010A14]/90
             backdrop-blur-xl
@@ -493,14 +645,18 @@ export default function DoctorLayout() {
         >
           {/* LEFT */}
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+            {/* MENU BUTTON */}
+
             <button
               onClick={() =>
                 setSidebarOpen((prev) => !prev)
               }
+              aria-label="Toggle sidebar"
               className="
-                w-7
-                h-7
+                w-8
+                h-8
+                shrink-0
                 rounded-md
                 flex
                 items-center
@@ -511,17 +667,24 @@ export default function DoctorLayout() {
                 transition
               "
             >
-              <Menu size={14} />
+              <Menu size={16} />
             </button>
 
-            <div className="hidden sm:block">
+            <div className="hidden sm:block shrink-0">
               <p className="text-[8px] text-white/25">
                 {language === "ar"
                   ? "مرحباً بك مرة أخرى"
                   : "Welcome back"}
               </p>
 
-              <h2 className="text-[11px] font-semibold text-white/90 mt-0.5">
+              <h2
+                className="
+                  text-[11px]
+                  font-semibold
+                  text-white/90
+                  mt-0.5
+                "
+              >
                 {language === "ar"
                   ? "د. أحمد 👋"
                   : "Dr. Ahmed 👋"}
@@ -573,7 +736,7 @@ export default function DoctorLayout() {
 
           {/* RIGHT */}
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             {/* NOTIFICATION */}
 
             <div className="relative">
@@ -585,8 +748,8 @@ export default function DoctorLayout() {
                 }
                 className="
                   relative
-                  w-7
-                  h-7
+                  w-8
+                  h-8
                   rounded-lg
                   flex
                   items-center
@@ -618,8 +781,8 @@ export default function DoctorLayout() {
                   className="
                     absolute
                     end-0
-                    top-9
-                    w-[330px]
+                    top-10
+                    w-[min(330px,calc(100vw-24px))]
                     bg-[#03111D]
                     border
                     border-white/[0.08]
@@ -670,13 +833,23 @@ export default function DoctorLayout() {
                       onClick={() =>
                         setIsNotificationsOpen(false)
                       }
-                      className="text-white/25 hover:text-white"
+                      className="
+                        text-white/25
+                        hover:text-white
+                      "
                     >
                       <X size={13} />
                     </button>
                   </div>
 
-                  <div className="p-2 space-y-1.5 max-h-[300px] overflow-y-auto">
+                  <div
+                    className="
+                      p-2
+                      space-y-1.5
+                      max-h-[300px]
+                      overflow-y-auto
+                    "
+                  >
                     {sentEmails.map((item) => (
                       <div
                         key={item.id}
@@ -689,29 +862,68 @@ export default function DoctorLayout() {
                         "
                       >
                         <div className="flex justify-between gap-2">
-                          <div>
-                            <p className="text-[9px] font-semibold text-white/80">
+                          <div className="min-w-0">
+                            <p
+                              className="
+                                text-[9px]
+                                font-semibold
+                                text-white/80
+                                truncate
+                              "
+                            >
                               {item.patientName}
                             </p>
 
-                            <p className="text-[7px] text-white/20 mt-1">
+                            <p
+                              className="
+                                text-[7px]
+                                text-white/20
+                                mt-1
+                                truncate
+                              "
+                            >
                               {item.email}
                             </p>
                           </div>
 
-                          {item.status ===
-                          "confirmed" ? (
-                            <span className="text-[6px] text-emerald-300 bg-emerald-400/10 px-1.5 py-1 rounded-md">
+                          {item.status === "confirmed" ? (
+                            <span
+                              className="
+                                shrink-0
+                                text-[6px]
+                                text-emerald-300
+                                bg-emerald-400/10
+                                px-1.5
+                                py-1
+                                rounded-md
+                              "
+                            >
                               Confirmed
                             </span>
                           ) : (
-                            <span className="text-[6px] text-amber-300 bg-amber-400/10 px-1.5 py-1 rounded-md">
+                            <span
+                              className="
+                                shrink-0
+                                text-[6px]
+                                text-amber-300
+                                bg-amber-400/10
+                                px-1.5
+                                py-1
+                                rounded-md
+                              "
+                            >
                               Pending
                             </span>
                           )}
                         </div>
 
-                        <p className="text-[7px] text-cyan-300/45 mt-2">
+                        <p
+                          className="
+                            text-[7px]
+                            text-cyan-300/45
+                            mt-2
+                          "
+                        >
                           {item.appointment}
                         </p>
                       </div>
@@ -726,7 +938,7 @@ export default function DoctorLayout() {
             <button
               onClick={toggleLanguage}
               className="
-                h-7
+                h-8
                 px-2
                 rounded-lg
                 flex
@@ -742,20 +954,22 @@ export default function DoctorLayout() {
             >
               <Globe size={12} />
 
-              {language === "ar"
-                ? "English"
-                : "العربية"}
+              <span className="hidden sm:inline">
+                {language === "ar"
+                  ? "English"
+                  : "العربية"}
+              </span>
             </button>
 
-            <div className="w-px h-5 bg-white/[0.07]" />
+            <div className="w-px h-5 bg-white/[0.07] hidden sm:block" />
 
             {/* PROFILE */}
 
             <div className="flex items-center gap-2">
               <div
                 className="
-                  w-7
-                  h-7
+                  w-8
+                  h-8
                   rounded-lg
                   bg-[#062130]
                   border
@@ -783,7 +997,7 @@ export default function DoctorLayout() {
 
               <ChevronDown
                 size={10}
-                className="text-white/20"
+                className="text-white/20 hidden sm:block"
               />
             </div>
           </div>
@@ -798,6 +1012,7 @@ export default function DoctorLayout() {
             relative
             flex-1
             min-h-0
+            min-w-0
             overflow-y-auto
             overflow-x-hidden
           "
@@ -836,7 +1051,16 @@ export default function DoctorLayout() {
             "
           />
 
-          <div className="relative p-3 sm:p-4 lg:p-5">
+          <div
+            className="
+              relative
+              w-full
+              max-w-full
+              p-3
+              sm:p-4
+              lg:p-5
+            "
+          >
             <Outlet />
           </div>
         </section>
