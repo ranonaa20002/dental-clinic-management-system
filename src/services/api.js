@@ -1,20 +1,29 @@
 import axios from "axios";
 
 const Api = axios.create({
-  baseURL: "http://localhost:1337/api",
+  baseURL:
+    import.meta.env.VITE_API_URL ||
+    "http://localhost:1337/api",
+
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-Api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
+// إرسال التوكن تلقائيًا مع كل Request
+Api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
 
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
-
-  return config;
-});
+);
 
 export default Api;

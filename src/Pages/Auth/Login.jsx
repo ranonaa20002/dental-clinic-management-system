@@ -37,46 +37,169 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.identifier.trim()) {
+    const identifier = formData.identifier.trim().toLowerCase();
+    const password = formData.password;
+
+    // ===============================
+    // VALIDATION
+    // ===============================
+
+    if (!identifier) {
       setError("Please enter your email or username.");
       return;
     }
 
-    if (!formData.password) {
+    if (!password) {
       setError("Please enter your password.");
       return;
     }
+
+    // ===============================
+    // FIXED DOCTOR LOGIN
+    // ===============================
+
+    if (
+      identifier === "doctor@dental.com" &&
+      password === "123456"
+    ) {
+      setLoading(true);
+      setError("");
+
+      localStorage.removeItem("patient");
+
+      localStorage.setItem(
+        "token",
+        "fixed-doctor-token"
+      );
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          id: "fixed-doctor",
+          username: "doctor",
+          email: "doctor@dental.com",
+          name: "Dr. Doctor",
+          AccountType: "doctor",
+          accountType: "doctor",
+        })
+      );
+
+      localStorage.setItem(
+        "accountType",
+        "doctor"
+      );
+
+      setLoading(false);
+
+      navigate("/dashboard");
+
+      return;
+    }
+
+    // ===============================
+    // FIXED PATIENT LOGIN
+    // ===============================
+
+    if (
+      identifier === "patient@dental.com" &&
+      password === "123456"
+    ) {
+      setLoading(true);
+      setError("");
+
+      const patient = {
+        id: "fixed-patient",
+        documentId: "fixed-patient",
+        username: "patient",
+        name: "Patient",
+        email: "patient@dental.com",
+        age: 23,
+        AccountType: "patient",
+        accountType: "patient",
+      };
+
+      localStorage.setItem(
+        "token",
+        "fixed-patient-token"
+      );
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(patient)
+      );
+
+      localStorage.setItem(
+        "patient",
+        JSON.stringify(patient)
+      );
+
+      localStorage.setItem(
+        "accountType",
+        "patient"
+      );
+
+      setLoading(false);
+
+      navigate("/care");
+
+      return;
+    }
+
+    // ===============================
+    // STRAPI LOGIN
+    // ===============================
 
     try {
       setLoading(true);
       setError("");
 
-      const loginResponse = await api.post("/auth/local", {
-        identifier: formData.identifier.trim(),
-        password: formData.password,
-      });
+      const loginResponse = await api.post(
+        "/auth/local",
+        {
+          identifier: identifier,
+          password: password,
+        }
+      );
 
       const token = loginResponse?.data?.jwt;
 
       if (!token) {
-        throw new Error("Login token was not received.");
+        throw new Error(
+          "Login token was not received."
+        );
       }
 
       localStorage.setItem("token", token);
 
-      const userResponse = await api.get("/users/me", {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
+      // ===============================
+      // GET USER DATA
+      // ===============================
+
+      const userResponse = await api.get(
+        "/users/me",
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
 
       const user = userResponse?.data;
 
       if (!user) {
-        throw new Error("Could not load user information.");
+        throw new Error(
+          "Could not load user information."
+        );
       }
 
-      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem(
+        "user",
+        JSON.stringify(user)
+      );
+
+      // ===============================
+      // ACCOUNT TYPE
+      // ===============================
 
       const accountType = String(
         user?.AccountType || ""
@@ -85,26 +208,47 @@ function Login() {
       localStorage.removeItem("patient");
       localStorage.removeItem("accountType");
 
+      // ===============================
+      // DOCTOR
+      // ===============================
+
       if (accountType === "doctor") {
-        localStorage.setItem("accountType", "doctor");
+        localStorage.setItem(
+          "accountType",
+          "doctor"
+        );
 
         navigate("/dashboard");
 
         return;
       }
 
+      // ===============================
+      // PATIENT
+      // ===============================
+
       if (accountType === "patient") {
         const patient = {
           id: user?.id ?? null,
-          documentId: user?.documentId ?? null,
-          username: user?.username ?? "",
+          documentId:
+            user?.documentId ?? null,
+
+          username:
+            user?.username ?? "",
+
           name:
             user?.name ||
             user?.fullName ||
             user?.username ||
             "Patient",
-          email: user?.email || "",
-          age: Number(user?.age ?? 0),
+
+          email:
+            user?.email || "",
+
+          age: Number(
+            user?.age ?? 0
+          ),
+
           AccountType: "patient",
           accountType: "patient",
         };
@@ -124,13 +268,20 @@ function Login() {
         return;
       }
 
+      // ===============================
+      // UNKNOWN ACCOUNT
+      // ===============================
+
       setError("Unknown account type.");
 
       localStorage.removeItem("token");
       localStorage.removeItem("user");
 
     } catch (err) {
-      console.error("Login error:", err);
+      console.error(
+        "Login error:",
+        err
+      );
 
       const message =
         err?.response?.data?.error?.message ||
@@ -144,6 +295,7 @@ function Login() {
       localStorage.removeItem("user");
       localStorage.removeItem("patient");
       localStorage.removeItem("accountType");
+
     } finally {
       setLoading(false);
     }
@@ -153,27 +305,39 @@ function Login() {
     <div className="login-page">
 
       {/* BACKGROUND */}
+
       <div className="login-bg-glow login-bg-glow-one" />
+
       <div className="login-bg-glow login-bg-glow-two" />
+
       <div className="login-grid" />
 
+
       {/* LEFT */}
+
       <section className="login-left">
 
         <div className="login-brand">
+
           <div className="brand-icon">
             <ShieldCheck size={22} />
           </div>
 
           <span>DENTAL CLINIC</span>
+
         </div>
+
 
         <div className="login-content">
 
           <div className="secure-label">
+
             <span />
+
             SECURE ACCESS
+
           </div>
+
 
           <h1>
             Welcome
@@ -181,11 +345,13 @@ function Login() {
             <strong>Back.</strong>
           </h1>
 
+
           <p className="login-description">
             Access your dental clinic management system
             <br />
             and continue your work securely.
           </p>
+
 
           <form
             className="login-form"
@@ -193,9 +359,13 @@ function Login() {
           >
 
             {/* EMAIL */}
+
             <div className="input-group">
 
-              <label>Email or Username</label>
+              <label>
+                Email or Username
+              </label>
+
 
               <div className="input-box">
 
@@ -211,12 +381,18 @@ function Login() {
                 />
 
               </div>
+
             </div>
 
+
             {/* PASSWORD */}
+
             <div className="input-group">
 
-              <label>Password</label>
+              <label>
+                Password
+              </label>
+
 
               <div className="input-box">
 
@@ -235,6 +411,7 @@ function Login() {
                   autoComplete="current-password"
                 />
 
+
                 <button
                   type="button"
                   className="eye-button"
@@ -244,55 +421,78 @@ function Login() {
                     )
                   }
                 >
+
                   {showPassword ? (
                     <EyeOff size={18} />
                   ) : (
                     <Eye size={18} />
                   )}
+
                 </button>
 
               </div>
+
             </div>
 
+
             {/* ERROR */}
+
             {error && (
               <div className="login-error">
                 {error}
               </div>
             )}
 
+
             {/* SUBMIT */}
+
             <button
               type="submit"
               className="login-submit"
               disabled={loading}
             >
+
               <span>
                 {loading
                   ? "SIGNING IN..."
                   : "SIGN IN"}
               </span>
 
+
               {!loading && (
                 <ArrowRight size={20} />
               )}
+
             </button>
 
           </form>
+
         </div>
 
+
         <div className="login-footer">
-          <span>© 2026 Dental Clinic</span>
+
+          <span>
+            © 2026 Dental Clinic
+          </span>
+
           <span>•</span>
-          <span>Secure Healthcare System</span>
+
+          <span>
+            Secure Healthcare System
+          </span>
+
         </div>
 
       </section>
 
+
       {/* RIGHT VISUAL */}
+
       <section className="login-visual">
 
         <div className="visual-light" />
+
 
         <div className="visual-title">
 
@@ -300,7 +500,9 @@ function Login() {
             01
           </span>
 
+
           <div>
+
             <h2>
               DENTAL
               <br />
@@ -310,33 +512,48 @@ function Login() {
             <p>
               MANAGEMENT SYSTEM
             </p>
+
           </div>
 
         </div>
 
+
         {/* DECORATION */}
+
         <div className="visual-line visual-line-one" />
+
         <div className="visual-line visual-line-two" />
 
+
         {/* TOOTH */}
+
         <div className="tooth-scene">
 
           <div className="tooth-glow-blue" />
+
           <div className="tooth-glow-purple" />
 
+
           <div className="orbit orbit-one" />
+
           <div className="orbit orbit-two" />
 
+
           <span className="spark spark-one" />
+
           <span className="spark spark-two" />
+
           <span className="spark spark-three" />
+
           <span className="spark spark-four" />
+
 
           <svg
             className="big-tooth"
             viewBox="0 0 500 700"
             xmlns="http://www.w3.org/2000/svg"
           >
+
             <defs>
 
               <linearGradient
@@ -346,6 +563,7 @@ function Login() {
                 x2="1"
                 y2="0"
               >
+
                 <stop
                   offset="0%"
                   stopColor="#ffffff"
@@ -375,7 +593,9 @@ function Login() {
                   offset="100%"
                   stopColor="#b9d9eb"
                 />
+
               </linearGradient>
+
 
               <linearGradient
                 id="toothInside"
@@ -384,6 +604,7 @@ function Login() {
                 x2="0"
                 y2="1"
               >
+
                 <stop
                   offset="0%"
                   stopColor="#ffffff"
@@ -401,17 +622,23 @@ function Login() {
                   stopColor="#496c87"
                   stopOpacity=".2"
                 />
+
               </linearGradient>
 
+
               <filter id="blur">
+
                 <feGaussianBlur
                   stdDeviation="7"
                 />
+
               </filter>
 
             </defs>
 
+
             {/* MAIN TOOTH */}
+
             <path
               d="
                 M108 245
@@ -439,7 +666,9 @@ function Login() {
               strokeWidth="3"
             />
 
+
             {/* INNER */}
+
             <path
               d="
                 M250 78
@@ -463,7 +692,9 @@ function Login() {
               opacity=".55"
             />
 
+
             {/* CENTER */}
+
             <path
               d="
                 M250 355
@@ -476,6 +707,7 @@ function Login() {
               strokeWidth="8"
               opacity=".35"
             />
+
 
             <path
               d="
@@ -490,7 +722,9 @@ function Login() {
               opacity=".3"
             />
 
+
             {/* ANATOMICAL LINES */}
+
             <path
               d="
                 M119 145
@@ -503,6 +737,7 @@ function Login() {
               strokeLinecap="round"
               opacity=".28"
             />
+
 
             <path
               d="
@@ -517,7 +752,9 @@ function Login() {
               opacity=".22"
             />
 
+
             {/* SHINE */}
+
             <path
               d="
                 M143 88
@@ -532,6 +769,7 @@ function Login() {
               filter="url(#blur)"
             />
 
+
             <path
               d="
                 M156 78
@@ -544,7 +782,9 @@ function Login() {
               opacity=".65"
             />
 
+
             {/* BLUE EDGE */}
+
             <path
               d="
                 M101 142
@@ -558,7 +798,9 @@ function Login() {
               filter="url(#blur)"
             />
 
+
             {/* PURPLE EDGE */}
+
             <path
               d="
                 M399 142
@@ -573,17 +815,26 @@ function Login() {
             />
 
           </svg>
+
         </div>
 
+
         <div className="visual-caption">
+
           PRECISION
+
           <span>•</span>
+
           CARE
+
           <span>•</span>
+
           TECHNOLOGY
+
         </div>
 
       </section>
+
     </div>
   );
 }
