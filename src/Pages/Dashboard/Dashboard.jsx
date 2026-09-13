@@ -70,26 +70,19 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="dashboard-page min-h-full px-5 py-5 lg:px-7 lg:py-6">
+    <div className="dashboard-page min-h-full w-full max-w-full overflow-x-hidden px-3 py-4 sm:px-5 sm:py-5 lg:px-7 lg:py-6">
       <style>{`
-        /* =====================================================
-           DASHBOARD ANIMATIONS
-        ===================================================== */
-
         @keyframes dashboardToothFloat {
-          0%,
-          100% {
+          0%, 100% {
             transform: translateY(0) scale(1);
           }
-
           50% {
             transform: translateY(-10px) scale(1.012);
           }
         }
 
         @keyframes dashboardToothGlow {
-          0%,
-          100% {
+          0%, 100% {
             filter:
               drop-shadow(0 0 7px rgba(80, 225, 255, 0.65))
               drop-shadow(0 0 24px rgba(0, 145, 255, 0.35));
@@ -106,7 +99,6 @@ export default function Dashboard() {
           from {
             transform: translate(-50%, -50%) rotate(0deg);
           }
-
           to {
             transform: translate(-50%, -50%) rotate(360deg);
           }
@@ -116,15 +108,13 @@ export default function Dashboard() {
           from {
             transform: translate(-50%, -50%) rotate(360deg);
           }
-
           to {
             transform: translate(-50%, -50%) rotate(0deg);
           }
         }
 
         @keyframes dashboardPlatform {
-          0%,
-          100% {
+          0%, 100% {
             transform: translateX(-50%) scaleX(0.96);
             opacity: 0.45;
           }
@@ -136,8 +126,7 @@ export default function Dashboard() {
         }
 
         @keyframes dashboardBeam {
-          0%,
-          100% {
+          0%, 100% {
             transform: translateX(-50%) scaleY(0.75);
             opacity: 0.25;
           }
@@ -201,8 +190,7 @@ export default function Dashboard() {
         }
 
         @keyframes dashboardSpark {
-          0%,
-          100% {
+          0%, 100% {
             opacity: 0.2;
             transform: scale(0.7);
           }
@@ -214,8 +202,7 @@ export default function Dashboard() {
         }
 
         @keyframes dashboardWave {
-          0%,
-          100% {
+          0%, 100% {
             transform: translateY(0);
           }
 
@@ -273,6 +260,7 @@ export default function Dashboard() {
 
         .dashboard-scroll::-webkit-scrollbar {
           width: 5px;
+          height: 5px;
         }
 
         .dashboard-scroll::-webkit-scrollbar-track {
@@ -283,14 +271,25 @@ export default function Dashboard() {
           background: rgba(40, 210, 240, 0.15);
           border-radius: 999px;
         }
+
+        /* MOBILE */
+        @media (max-width: 639px) {
+          .dashboard-page {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+          }
+
+          .dashboard-page button {
+            max-width: 100%;
+          }
+        }
       `}</style>
 
-      {/* =====================================================
-          WELCOME
-      ===================================================== */}
+      {/* WELCOME */}
 
       <div className="mb-4">
-        <h1 className="text-[19px] lg:text-[21px] font-semibold tracking-tight text-white">
+        <h1 className="text-[18px] sm:text-[19px] lg:text-[21px] font-semibold tracking-tight text-white">
           Welcome back, Dr. Ahmed 👋
         </h1>
 
@@ -299,19 +298,15 @@ export default function Dashboard() {
         </p>
       </div>
 
-      {/* =====================================================
-          MAIN TOP AREA
-      ===================================================== */}
+      {/* MAIN TOP AREA */}
 
       <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_315px] gap-4 mb-4">
-        {/* ===================================================
-            LEFT
-        =================================================== */}
+        {/* LEFT */}
 
-        <div className="min-w-0">
+        <div className="min-w-0 w-full">
           {/* STAT CARDS */}
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-3">
             <StatCard
               icon={<Users size={17} />}
               title="Today's Patients"
@@ -357,6 +352,7 @@ export default function Dashboard() {
 
           <div
             className="
+              w-full
               rounded-xl
               border
               border-[#103448]
@@ -367,16 +363,18 @@ export default function Dashboard() {
           >
             <div
               className="
-                px-4
+                px-3
+                sm:px-4
                 py-3
                 flex
                 items-center
                 justify-between
+                gap-2
                 border-b
                 border-white/[0.045]
               "
             >
-              <div>
+              <div className="min-w-0">
                 <h2 className="text-[10px] font-semibold text-white">
                   Today's Appointments
                 </h2>
@@ -388,6 +386,7 @@ export default function Dashboard() {
 
               <button
                 className="
+                  shrink-0
                   text-[7px]
                   text-cyan-300
                   px-2.5
@@ -404,93 +403,97 @@ export default function Dashboard() {
               </button>
             </div>
 
-            {/* HEADER */}
+            {/* RESPONSIVE TABLE */}
 
-            <div
-              className="
-                grid
-                grid-cols-[1.2fr_1.35fr_.65fr_.75fr_.55fr]
-                gap-2
-                px-4
-                py-2
-                text-[7px]
-                text-white/25
-                border-b
-                border-white/[0.035]
-              "
-            >
-              <span>Patient</span>
-              <span>Type</span>
-              <span>Time</span>
-              <span>Status</span>
-              <span>Room</span>
-            </div>
+            <div className="dashboard-scroll w-full overflow-x-auto">
+              <div className="min-w-[560px]">
+                {/* HEADER */}
 
-            {/* ROWS */}
-
-            {appointments.map((item) => (
-              <div
-                key={item.name}
-                className="
-                  grid
-                  grid-cols-[1.2fr_1.35fr_.65fr_.75fr_.55fr]
-                  gap-2
-                  items-center
-                  px-4
-                  py-2.5
-                  border-b
-                  border-white/[0.025]
-                  last:border-0
-                  hover:bg-cyan-400/[0.015]
-                  transition
-                "
-              >
-                <div className="flex items-center gap-2 min-w-0">
-                  <div
-                    className="
-                      w-6
-                      h-6
-                      rounded-full
-                      bg-[#10334a]
-                      border
-                      border-cyan-300/10
-                      flex
-                      items-center
-                      justify-center
-                      text-[6px]
-                      text-cyan-100
-                      shrink-0
-                    "
-                  >
-                    {item.initials}
-                  </div>
-
-                  <span className="text-[7px] text-white/75 truncate">
-                    {item.name}
-                  </span>
+                <div
+                  className="
+                    grid
+                    grid-cols-[1.2fr_1.35fr_.65fr_.75fr_.55fr]
+                    gap-2
+                    px-4
+                    py-2
+                    text-[7px]
+                    text-white/25
+                    border-b
+                    border-white/[0.035]
+                  "
+                >
+                  <span>Patient</span>
+                  <span>Type</span>
+                  <span>Time</span>
+                  <span>Status</span>
+                  <span>Room</span>
                 </div>
 
-                <span className="text-[7px] text-white/40 truncate">
-                  {item.type}
-                </span>
+                {/* ROWS */}
 
-                <span className="text-[7px] text-white/55">
-                  {item.time}
-                </span>
+                {appointments.map((item) => (
+                  <div
+                    key={item.name}
+                    className="
+                      grid
+                      grid-cols-[1.2fr_1.35fr_.65fr_.75fr_.55fr]
+                      gap-2
+                      items-center
+                      px-4
+                      py-2.5
+                      border-b
+                      border-white/[0.025]
+                      last:border-0
+                      hover:bg-cyan-400/[0.015]
+                      transition
+                    "
+                  >
+                    <div className="flex items-center gap-2 min-w-0">
+                      <div
+                        className="
+                          w-6
+                          h-6
+                          rounded-full
+                          bg-[#10334a]
+                          border
+                          border-cyan-300/10
+                          flex
+                          items-center
+                          justify-center
+                          text-[6px]
+                          text-cyan-100
+                          shrink-0
+                        "
+                      >
+                        {item.initials}
+                      </div>
 
-                <Status status={item.status} />
+                      <span className="text-[7px] text-white/75 truncate">
+                        {item.name}
+                      </span>
+                    </div>
 
-                <span className="text-[7px] text-white/45">
-                  {item.room}
-                </span>
+                    <span className="text-[7px] text-white/40 truncate">
+                      {item.type}
+                    </span>
+
+                    <span className="text-[7px] text-white/55 whitespace-nowrap">
+                      {item.time}
+                    </span>
+
+                    <Status status={item.status} />
+
+                    <span className="text-[7px] text-white/45">
+                      {item.room}
+                    </span>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
         </div>
 
-        {/* ===================================================
-            TOOTH VISUAL
-        =================================================== */}
+        {/* TOOTH VISUAL */}
 
         <div
           className="
@@ -508,8 +511,6 @@ export default function Dashboard() {
             shadow-[inset_0_0_50px_rgba(0,100,150,.08)]
           "
         >
-          {/* BACKGROUND */}
-
           <div
             className="
               absolute
@@ -531,8 +532,6 @@ export default function Dashboard() {
               blur-[85px]
             "
           />
-
-          {/* GRID */}
 
           <div
             className="
@@ -582,34 +581,19 @@ export default function Dashboard() {
             </div>
 
             <div className="mt-3 space-y-2">
-              <MiniStatus
-                label="Operations"
-                value="4/4"
-              />
-
-              <MiniStatus
-                label="Staff On Duty"
-                value="6"
-              />
-
-              <MiniStatus
-                label="AI Analysis"
-                value="98%"
-              />
+              <MiniStatus label="Operations" value="4/4" />
+              <MiniStatus label="Staff On Duty" value="6" />
+              <MiniStatus label="AI Analysis" value="98%" />
             </div>
           </div>
-
-          {/* TOOTH */}
 
           <DentalTooth />
         </div>
       </div>
 
-      {/* =====================================================
-          LOWER CARDS
-      ===================================================== */}
+      {/* LOWER CARDS */}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4">
         {/* REVENUE */}
 
         <div
@@ -618,11 +602,14 @@ export default function Dashboard() {
             border
             border-[#103448]
             bg-[#04131e]
-            p-4
+            p-3
+            sm:p-4
             min-h-[190px]
+            min-w-0
+            overflow-hidden
           "
         >
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-2">
             <div>
               <h2 className="text-[10px] font-semibold text-white">
                 Revenue Overview
@@ -635,6 +622,7 @@ export default function Dashboard() {
 
             <button
               className="
+                shrink-0
                 text-[7px]
                 text-white/45
                 px-2
@@ -768,20 +756,25 @@ export default function Dashboard() {
             border
             border-[#103448]
             bg-[#04131e]
-            p-4
+            p-3
+            sm:p-4
             min-h-[190px]
+            min-w-0
+            overflow-hidden
           "
         >
           <h2 className="text-[10px] font-semibold">
             Treatment Distribution
           </h2>
 
-          <div className="flex items-center justify-center gap-5 mt-5">
-            <div className="relative">
+          <div className="flex items-center justify-center gap-4 sm:gap-5 mt-5">
+            <div className="relative shrink-0">
               <div
                 className="
-                  w-[112px]
-                  h-[112px]
+                  w-[100px]
+                  h-[100px]
+                  sm:w-[112px]
+                  sm:h-[112px]
                   rounded-full
                   flex
                   items-center
@@ -794,8 +787,10 @@ export default function Dashboard() {
               >
                 <div
                   className="
-                    w-[72px]
-                    h-[72px]
+                    w-[64px]
+                    h-[64px]
+                    sm:w-[72px]
+                    sm:h-[72px]
                     rounded-full
                     bg-[#061722]
                     flex
@@ -815,7 +810,7 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-2 min-w-0">
               <Legend
                 color="bg-cyan-400"
                 label="General Dentistry"
@@ -857,8 +852,11 @@ export default function Dashboard() {
             border
             border-[#103448]
             bg-[#04131e]
-            p-4
+            p-3
+            sm:p-4
             min-h-[190px]
+            min-w-0
+            overflow-hidden
           "
         >
           <div className="flex items-center justify-between">
@@ -883,6 +881,7 @@ export default function Dashboard() {
                   border-b
                   border-white/[0.035]
                   last:border-0
+                  min-w-0
                 "
               >
                 <div
@@ -898,22 +897,23 @@ export default function Dashboard() {
                     justify-center
                     text-[6px]
                     text-cyan-100
+                    shrink-0
                   "
                 >
                   {item.initials}
                 </div>
 
                 <div className="min-w-0 flex-1">
-                  <p className="text-[7px] font-semibold text-white/75">
+                  <p className="text-[7px] font-semibold text-white/75 truncate">
                     {item.name}
                   </p>
 
-                  <p className="text-[6px] text-white/30 mt-0.5">
+                  <p className="text-[6px] text-white/30 mt-0.5 truncate">
                     {item.type}
                   </p>
                 </div>
 
-                <div className="text-end">
+                <div className="text-end shrink-0">
                   <p className="text-[6px] text-white/45">
                     {item.date}
                   </p>
@@ -925,7 +925,7 @@ export default function Dashboard() {
 
                 <CalendarDays
                   size={12}
-                  className="text-white/25"
+                  className="text-white/25 shrink-0"
                 />
               </div>
             ))}
@@ -933,13 +933,12 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* =====================================================
-          AI ASSISTANT
-      ===================================================== */}
+      {/* AI ASSISTANT */}
 
       <div
         className="
-          mt-4
+          mt-3
+          sm:mt-4
           min-h-[65px]
           rounded-xl
           border
@@ -952,7 +951,8 @@ export default function Dashboard() {
           relative
           flex
           items-center
-          px-4
+          px-3
+          sm:px-4
         "
       >
         <div
@@ -987,7 +987,7 @@ export default function Dashboard() {
           <Sparkles size={16} />
         </div>
 
-        <div className="min-w-[150px]">
+        <div className="min-w-0">
           <p className="text-[9px] font-semibold">
             AI Assistant
           </p>
@@ -997,7 +997,7 @@ export default function Dashboard() {
           </p>
         </div>
 
-        <div className="hidden sm:block ms-8">
+        <div className="hidden sm:block ms-8 min-w-0">
           <p className="text-[8px] font-semibold text-white/70">
             Ready to assist you
           </p>
@@ -1008,7 +1008,7 @@ export default function Dashboard() {
           </p>
         </div>
 
-        <div className="ms-auto flex items-center gap-4">
+        <div className="ms-auto flex items-center gap-2 sm:gap-4 shrink-0">
           <svg
             width="150"
             height="38"
@@ -1046,6 +1046,7 @@ export default function Dashboard() {
               flex
               items-center
               justify-center
+              shrink-0
             "
           >
             <ChevronRight size={14} />
@@ -1076,12 +1077,14 @@ function StatCard({
         border
         border-[#103448]
         bg-[#04131e]
-        p-3.5
+        p-2.5
+        sm:p-3.5
         min-h-[104px]
         relative
         overflow-hidden
         hover:border-cyan-300/15
         transition
+        min-w-0
       "
     >
       <div
@@ -1100,11 +1103,11 @@ function StatCard({
         {icon}
       </div>
 
-      <p className="text-[7px] text-white/35">
+      <p className="text-[7px] text-white/35 truncate">
         {title}
       </p>
 
-      <p className="text-[20px] leading-none font-semibold mt-1.5">
+      <p className="text-[18px] sm:text-[20px] leading-none font-semibold mt-1.5">
         {value}
       </p>
 
@@ -1115,6 +1118,7 @@ function StatCard({
           gap-1
           text-[6px]
           mt-2
+          whitespace-nowrap
           ${
             positive
               ? "text-emerald-400"
@@ -1199,21 +1203,22 @@ function MiniStatus({ label, value }) {
 
 function Legend({ color, label, value }) {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 min-w-0">
       <span
         className={`
           w-1.5
           h-1.5
           rounded-full
           ${color}
+          shrink-0
         `}
       />
 
-      <span className="text-[6px] text-white/40 w-[72px]">
+      <span className="text-[6px] text-white/40 w-[72px] truncate">
         {label}
       </span>
 
-      <span className="text-[6px] text-white/55">
+      <span className="text-[6px] text-white/55 shrink-0">
         {value}
       </span>
     </div>
@@ -1234,11 +1239,10 @@ function DentalTooth() {
         flex
         items-center
         justify-center
+        shrink-0
       "
     >
-      {/* ====================================================
-          BIG BACK GLOW
-      ==================================================== */}
+      {/* BIG BACK GLOW */}
 
       <div
         className="
@@ -1263,9 +1267,7 @@ function DentalTooth() {
         "
       />
 
-      {/* ====================================================
-          ORBIT 1
-      ==================================================== */}
+      {/* ORBIT 1 */}
 
       <div
         className="
@@ -1310,9 +1312,7 @@ function DentalTooth() {
         />
       </div>
 
-      {/* ====================================================
-          ORBIT 2
-      ==================================================== */}
+      {/* ORBIT 2 */}
 
       <div
         className="
@@ -1344,9 +1344,7 @@ function DentalTooth() {
         />
       </div>
 
-      {/* ====================================================
-          ORBIT 3
-      ==================================================== */}
+      {/* ORBIT 3 */}
 
       <div
         className="
@@ -1365,9 +1363,7 @@ function DentalTooth() {
         "
       />
 
-      {/* ====================================================
-          LIGHT BEAM
-      ==================================================== */}
+      {/* LIGHT BEAM */}
 
       <div
         className="
@@ -1386,9 +1382,7 @@ function DentalTooth() {
         "
       />
 
-      {/* ====================================================
-          TOOTH
-      ==================================================== */}
+      {/* TOOTH */}
 
       <div
         className="
@@ -1404,8 +1398,6 @@ function DentalTooth() {
           className="w-full h-full overflow-visible"
         >
           <defs>
-            {/* MAIN BODY */}
-
             <linearGradient
               id="dashboardToothMain"
               x1="0"
@@ -1413,38 +1405,13 @@ function DentalTooth() {
               x2="1"
               y2="1"
             >
-              <stop
-                offset="0%"
-                stopColor="#ffffff"
-              />
-
-              <stop
-                offset="17%"
-                stopColor="#e6fbff"
-              />
-
-              <stop
-                offset="36%"
-                stopColor="#a3e6ff"
-              />
-
-              <stop
-                offset="55%"
-                stopColor="#397fa7"
-              />
-
-              <stop
-                offset="72%"
-                stopColor="#b8f0ff"
-              />
-
-              <stop
-                offset="100%"
-                stopColor="#2b7197"
-              />
+              <stop offset="0%" stopColor="#ffffff" />
+              <stop offset="17%" stopColor="#e6fbff" />
+              <stop offset="36%" stopColor="#a3e6ff" />
+              <stop offset="55%" stopColor="#397fa7" />
+              <stop offset="72%" stopColor="#b8f0ff" />
+              <stop offset="100%" stopColor="#2b7197" />
             </linearGradient>
-
-            {/* INNER */}
 
             <linearGradient
               id="dashboardToothInner"
@@ -1478,8 +1445,6 @@ function DentalTooth() {
               />
             </linearGradient>
 
-            {/* INTERNAL LIGHT */}
-
             <radialGradient
               id="dashboardToothLight"
               cx="30%"
@@ -1511,8 +1476,6 @@ function DentalTooth() {
               />
             </radialGradient>
 
-            {/* GLOW */}
-
             <filter
               id="dashboardToothGlow"
               x="-100%"
@@ -1536,8 +1499,6 @@ function DentalTooth() {
                 "
               />
             </filter>
-
-            {/* SHINE */}
 
             <linearGradient
               id="dashboardToothShine"
@@ -1566,9 +1527,7 @@ function DentalTooth() {
             </linearGradient>
           </defs>
 
-          {/* ==================================================
-              OUTER GLOW
-          ================================================== */}
+          {/* OUTER GLOW */}
 
           <path
             d="
@@ -1597,9 +1556,7 @@ function DentalTooth() {
             filter="url(#dashboardToothGlow)"
           />
 
-          {/* ==================================================
-              MAIN TOOTH
-          ================================================== */}
+          {/* MAIN TOOTH */}
 
           <path
             d="
@@ -1626,9 +1583,7 @@ function DentalTooth() {
             strokeWidth="2.2"
           />
 
-          {/* ==================================================
-              INNER DEPTH
-          ================================================== */}
+          {/* INNER DEPTH */}
 
           <path
             d="
@@ -1652,9 +1607,7 @@ function DentalTooth() {
             opacity=".6"
           />
 
-          {/* ==================================================
-              SOFT INTERNAL LIGHT
-          ================================================== */}
+          {/* SOFT INTERNAL LIGHT */}
 
           <path
             d="
@@ -1671,9 +1624,7 @@ function DentalTooth() {
             filter="url(#dashboardToothGlow)"
           />
 
-          {/* ==================================================
-              ROOT CENTER
-          ================================================== */}
+          {/* ROOT CENTER */}
 
           <path
             d="
@@ -1701,9 +1652,7 @@ function DentalTooth() {
             opacity=".38"
           />
 
-          {/* ==================================================
-              TOP RIDGES
-          ================================================== */}
+          {/* TOP RIDGES */}
 
           <path
             d="
@@ -1729,9 +1678,7 @@ function DentalTooth() {
             opacity=".28"
           />
 
-          {/* ==================================================
-              LEFT SHINE
-          ================================================== */}
+          {/* LEFT SHINE */}
 
           <path
             d="
@@ -1745,9 +1692,7 @@ function DentalTooth() {
             opacity=".75"
           />
 
-          {/* ==================================================
-              TOP SHINE
-          ================================================== */}
+          {/* TOP SHINE */}
 
           <path
             d="
@@ -1761,9 +1706,7 @@ function DentalTooth() {
             opacity=".65"
           />
 
-          {/* ==================================================
-              INTERNAL PARTICLES
-          ================================================== */}
+          {/* INTERNAL PARTICLES */}
 
           <circle
             cx="104"
@@ -1815,9 +1758,7 @@ function DentalTooth() {
         </svg>
       </div>
 
-      {/* ====================================================
-          BOTTOM GLOW
-      ==================================================== */}
+      {/* BOTTOM GLOW */}
 
       <div
         className="
@@ -1833,9 +1774,7 @@ function DentalTooth() {
         "
       />
 
-      {/* ====================================================
-          PLATFORM
-      ==================================================== */}
+      {/* PLATFORM */}
 
       <div
         className="
@@ -1879,9 +1818,7 @@ function DentalTooth() {
         />
       </div>
 
-      {/* ====================================================
-          PARTICLES
-      ==================================================== */}
+      {/* PARTICLES */}
 
       <span
         className="
@@ -1955,9 +1892,7 @@ function DentalTooth() {
         style={{ animationDelay: "1.8s" }}
       />
 
-      {/* ====================================================
-          FIXED SPARKS
-      ==================================================== */}
+      {/* FIXED SPARKS */}
 
       <span
         className="
