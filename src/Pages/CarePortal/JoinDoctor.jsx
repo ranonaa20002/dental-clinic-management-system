@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import api from "../../services/Api";
-
+import api from "../../services/api";
 import {
   Stethoscope,
   UserRoundPlus,
