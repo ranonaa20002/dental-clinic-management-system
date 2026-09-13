@@ -12,7 +12,7 @@ import AIAssistant from "./Pages/AIAssistant/AIAssistant";
 import DentalClinicalHub from "./Pages/DentalClinicalHub";
 import Reports from "./Pages/Reports/Reports";
 import Prescription from "./Pages/Prescription/Prescription";
-import Login from "./Pages/Auth/Login";
+import Login from "./Pages/Auth/login";
 import Register from "./Pages/Auth/Register";
 
 import CarePortal from "./Pages/CarePortal/CarePortal";
