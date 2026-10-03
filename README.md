@@ -1,5 +1,4 @@
-![Uploading Screenshot 2026-10-04 000621.png…]()
-![Uploading Screenshot 2026-10-04 001019.png…]()
+
 <img width="937" height="413" alt="Screenshot 2026-10-04 001030" src="https://github.com/user-attachments/assets/a84df866-8ca4-431f-b20d-acf1e2f4d3e3" />
 <img width="901" height="404" alt="Screenshot 2026-10-04 001212" src="https://github.com/user-attachments/assets/92bba3d0-a888-461c-a547-8ee00cd219a1" />
 <img width="698" height="350" alt="Screenshot 2026-10-04 001227" src="https://github.com/user-attachments/assets/46b6b922-7b02-4e14-9f0c-7f0474ce8779" />
